@@ -15,6 +15,7 @@
 		F179EBDC294579C800C597F6 /* STRAY_ITUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBDB294579C800C597F6 /* STRAY_ITUITests.swift */; };
 		F179EBDE294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBDD294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift */; };
 		F179EBED2945867100C597F6 /* DirectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBEC2945867100C597F6 /* DirectionView.swift */; };
+		F179EBEF29458DBC00C597F6 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBEE29458DBC00C597F6 /* MapModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		F179EBDB294579C800C597F6 /* STRAY_ITUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STRAY_ITUITests.swift; sourceTree = "<group>"; };
 		F179EBDD294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STRAY_ITUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F179EBEC2945867100C597F6 /* DirectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionView.swift; sourceTree = "<group>"; };
+		F179EBEE29458DBC00C597F6 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 		F179EBBE294579C600C597F6 /* STRAY-IT */ = {
 			isa = PBXGroup;
 			children = (
+				F179EBF029458DC300C597F6 /* Models */,
 				F179EBEA2945863B00C597F6 /* Views */,
 				F179EBBF294579C600C597F6 /* STRAY_ITApp.swift */,
 				F179EBC1294579C600C597F6 /* ContentView.swift */,
@@ -146,6 +149,14 @@
 				F179EBEC2945867100C597F6 /* DirectionView.swift */,
 			);
 			path = Direction;
+			sourceTree = "<group>";
+		};
+		F179EBF029458DC300C597F6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F179EBEE29458DBC00C597F6 /* MapModel.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,6 +289,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F179EBEF29458DBC00C597F6 /* MapModel.swift in Sources */,
 				F179EBED2945867100C597F6 /* DirectionView.swift in Sources */,
 				F179EBC2294579C600C597F6 /* ContentView.swift in Sources */,
 				F179EBC0294579C600C597F6 /* STRAY_ITApp.swift in Sources */,
