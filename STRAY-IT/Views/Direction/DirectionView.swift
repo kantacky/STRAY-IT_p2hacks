@@ -24,6 +24,7 @@ struct DirectionView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("Background"))
         .edgesIgnoringSafeArea(.top)
+        .edgesIgnoringSafeArea(.horizontal)
     }
 }
 
