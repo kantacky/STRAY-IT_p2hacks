@@ -12,6 +12,7 @@ struct STRAY_ITApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(LocationManager())
         }
     }
 }
