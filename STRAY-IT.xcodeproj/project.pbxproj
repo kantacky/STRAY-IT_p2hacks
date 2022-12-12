@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F16CFFBD294648AE00FE25F1 /* AdventureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F16CFFBC294648AE00FE25F1 /* AdventureView.swift */; };
 		F179EBC0294579C600C597F6 /* STRAY_ITApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBBF294579C600C597F6 /* STRAY_ITApp.swift */; };
 		F179EBC2294579C600C597F6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBC1294579C600C597F6 /* ContentView.swift */; };
 		F179EBC4294579C800C597F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F179EBC3294579C800C597F6 /* Assets.xcassets */; };
@@ -17,7 +16,6 @@
 		F179EBDE294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBDD294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift */; };
 		F179EBED2945867100C597F6 /* DirectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBEC2945867100C597F6 /* DirectionView.swift */; };
 		F179EBEF29458DBC00C597F6 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBEE29458DBC00C597F6 /* MapModel.swift */; };
-		F179EBF22945EE2400C597F6 /* CheatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBF12945EE2400C597F6 /* CheatView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +36,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F16CFFBC294648AE00FE25F1 /* AdventureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureView.swift; sourceTree = "<group>"; };
 		F179EBBC294579C600C597F6 /* STRAY-IT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "STRAY-IT.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F179EBBF294579C600C597F6 /* STRAY_ITApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STRAY_ITApp.swift; sourceTree = "<group>"; };
 		F179EBC1294579C600C597F6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -52,7 +49,6 @@
 		F179EBDD294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STRAY_ITUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F179EBEC2945867100C597F6 /* DirectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionView.swift; sourceTree = "<group>"; };
 		F179EBEE29458DBC00C597F6 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
-		F179EBF12945EE2400C597F6 /* CheatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,28 +76,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F10A7E1A29464B6600AE5911 /* Tutorial */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Tutorial;
-			sourceTree = "<group>";
-		};
-		F16CFFBB2946489C00FE25F1 /* Adventure */ = {
-			isa = PBXGroup;
-			children = (
-				F16CFFBC294648AE00FE25F1 /* AdventureView.swift */,
-			);
-			path = Adventure;
-			sourceTree = "<group>";
-		};
-		F16CFFBE2946491100FE25F1 /* Search */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Search;
-			sourceTree = "<group>";
-		};
 		F179EBB3294579C600C597F6 = {
 			isa = PBXGroup;
 			children = (
@@ -128,7 +102,6 @@
 				F179EBF029458DC300C597F6 /* Models */,
 				F179EBEA2945863B00C597F6 /* Views */,
 				F179EBBF294579C600C597F6 /* STRAY_ITApp.swift */,
-				F179EBC1294579C600C597F6 /* ContentView.swift */,
 				F179EBC3294579C800C597F6 /* Assets.xcassets */,
 				F179EBC5294579C800C597F6 /* STRAY_IT.entitlements */,
 				F179EBC6294579C800C597F6 /* Preview Content */,
@@ -164,11 +137,8 @@
 		F179EBEA2945863B00C597F6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F179EBC1294579C600C597F6 /* ContentView.swift */,
 				F179EBEB2945864300C597F6 /* Direction */,
-				F16CFFBB2946489C00FE25F1 /* Adventure */,
-				F179EBF32945EE2A00C597F6 /* Cheat */,
-				F16CFFBE2946491100FE25F1 /* Search */,
-				F10A7E1A29464B6600AE5911 /* Tutorial */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -187,14 +157,6 @@
 				F179EBEE29458DBC00C597F6 /* MapModel.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		F179EBF32945EE2A00C597F6 /* Cheat */ = {
-			isa = PBXGroup;
-			children = (
-				F179EBF12945EE2400C597F6 /* CheatView.swift */,
-			);
-			path = Cheat;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -331,8 +293,6 @@
 				F179EBED2945867100C597F6 /* DirectionView.swift in Sources */,
 				F179EBC2294579C600C597F6 /* ContentView.swift in Sources */,
 				F179EBC0294579C600C597F6 /* STRAY_ITApp.swift in Sources */,
-				F179EBF22945EE2400C597F6 /* CheatView.swift in Sources */,
-				F16CFFBD294648AE00FE25F1 /* AdventureView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
