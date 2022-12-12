@@ -9,18 +9,31 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        TabView {
+            DirectionView()
+                .tabItem {
+                    Image(systemName: "location.north.line")
+                    Text("Direction")
+                }
+            
+//            AdventureView()
+//                .tabItem {
+//                    Image(systemName: "figure.walk")
+//                    Text("Adventure")
+//                }
+//
+//            CheatView()
+//                .tabItem {
+//                    Image(systemName: "map")
+//                    Text("Cheat")
+//                }
         }
-        .padding()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(LocationManager())
     }
 }
