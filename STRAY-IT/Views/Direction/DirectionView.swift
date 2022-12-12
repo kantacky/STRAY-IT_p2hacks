@@ -6,15 +6,30 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct DirectionView: View {
+    @EnvironmentObject var manager: LocationManager
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Image("Direction")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 400, height: 400)
+                .rotationEffect(.degrees(manager.destinationDirection))
+            
+            Text("あと \(Int(manager.delta)) m")
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color("Background"))
+        .edgesIgnoringSafeArea(.top)
     }
 }
 
 struct DirectionView_Previews: PreviewProvider {
     static var previews: some View {
         DirectionView()
+            .environmentObject(LocationManager())
     }
 }
