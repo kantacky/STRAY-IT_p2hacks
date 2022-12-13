@@ -8,13 +8,27 @@
 import SwiftUI
 
 struct SearchView: View {
+    @EnvironmentObject var manager: LocationManager
+    @State private var queryText: String = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            List {
+                Section {
+                    LabeledContent("目的地") {
+                        Text(manager.start_and_goal[1].title)
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .searchable(text: $queryText)
+        }
     }
 }
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
         SearchView()
+            .environmentObject(LocationManager())
     }
 }
