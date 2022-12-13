@@ -8,25 +8,37 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var viewStates: ViewStates
+    @State var selectedTab = 0
+    
     var body: some View {
-        TabView {
-            DirectionView()
-                .tabItem {
-                    Image(systemName: "location.north.line")
-                    Text("Direction")
-                }
-            
-//            AdventureView()
-//                .tabItem {
-//                    Image(systemName: "figure.walk")
-//                    Text("Adventure")
-//                }
+        if (viewStates.searchViewIsShowing) {
+            SearchView()
+        } else {
+            TabView(selection: $selectedTab) {
+                DirectionView()
+                    .tabItem {
+                        Image(selectedTab == 0 ? "DirectionViewTabSelectedIcon" : "DirectionViewTabUnselectedIcon")
+                        Text("Direction")
+                    }
+                    .tag(0)
+                
+//                AdventureView()
+//                    .tabItem {
+//                        Image(selectedTab == 1 ? "AdventureViewTabSelectedIcon" : "AdventureViewTabUnselectedIcon")
+//                        Text("Adventure")
+//                    }
+//                    .tag(1)
 //
-//            CheatView()
-//                .tabItem {
-//                    Image(systemName: "map")
-//                    Text("Cheat")
-//                }
+//                CheatView()
+//                    .tabItem {
+//                        Image(selectedTab == 2 ? "CheatViewTabSelectedIcon" : "CheatViewTabUnselectedIcon")
+//
+//                            .font(.system(size: 8))
+//                        Text("Cheat")
+//                    }
+//                    .tag(2)
+            }
         }
     }
 }
@@ -34,6 +46,7 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(ViewStates())
             .environmentObject(LocationManager())
     }
 }

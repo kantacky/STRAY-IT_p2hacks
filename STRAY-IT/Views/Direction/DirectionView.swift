@@ -12,14 +12,21 @@ struct DirectionView: View {
     @EnvironmentObject var manager: LocationManager
     
     var body: some View {
-        VStack {
+        ZStack {
+            Image("DirectionViewDecoration")
+            
             Image("Direction")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 400, height: 400)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .rotationEffect(.degrees(manager.destinationDirection))
             
-            Text("あと \(Int(manager.delta)) m")
+            Text("\(Int(manager.delta)) m")
+                .foregroundColor(Color("AccentFontColor"))
+                .font(.title2)
+                .fontWeight(.semibold)
+            
+            SearchButton()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("Background"))

@@ -8,11 +8,33 @@
 import Foundation
 import MapKit
 
+class ViewStates: ObservableObject {
+    @Published var searchViewIsShowing = true
+}
+
+struct IdentifiablePlace: Identifiable {
+    let id: UUID
+    let location: CLLocationCoordinate2D
+    let title: String
+    
+    init(id: UUID = UUID(), latitude: Double, longitude: Double, title: String) {
+        self.id = id
+        self.location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        self.title = title
+    }
+    
+    init(id: UUID = UUID(), location: CLLocationCoordinate2D, title: String) {
+        self.id = id
+        self.location = location
+        self.title = title
+    }
+}
+
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     let manager = CLLocationManager()
     
-    @Published var region = MKCoordinateRegion()
-    @Published var start_and_goal: [IdentifiablePlace] = [IdentifiablePlace(latitude: MKCoordinateRegion().center.latitude, longitude: MKCoordinateRegion().center.longitude, title: "現在地"), IdentifiablePlace(latitude: MKCoordinateRegion().center.latitude, longitude: MKCoordinateRegion().center.longitude, title: "目的地")]
+    @Published var region: MKCoordinateRegion = MKCoordinateRegion()
+    @Published var places: [String: IdentifiablePlace?] = ["start": nil, "goal": nil]
     @Published var headingDirection: Double = 0
     @Published var destinationDirection: Double = 0
     @Published var delta: Double = 0
@@ -25,11 +47,6 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         manager.distanceFilter = 1.0
         manager.startUpdatingLocation()
         manager.startUpdatingHeading()
-        
-        start_and_goal = [
-            IdentifiablePlace(latitude: region.center.latitude, longitude: region.center.longitude, title: "出発地"),
-            IdentifiablePlace(latitude: 41.7895949, longitude: 140.7519594, title: "無印良品シエスタハコダテ")
-        ]
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -53,33 +70,36 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         calculateDelta()
         calculateDestinationDirection()
     }
+}
+
+extension LocationManager {
     
     func calculateDelta() {
-        let currentCoordinate = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
-        let goalCoordinate = CLLocation(latitude: start_and_goal[1].location.latitude, longitude: start_and_goal[1].location.longitude)
-        delta = currentCoordinate.distance(from: goalCoordinate)
+        if (places["goal"] != nil) {
+            let currentCoordinate = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
+            let goalCoordinate = CLLocation(latitude: places["goal"]??.location.latitude ?? 0, longitude: places["goal"]??.location.longitude ?? 0)
+            delta = currentCoordinate.distance(from: goalCoordinate)
+        }
     }
     
     func calculateDestinationDirection() {
-        let currentLatitude = toRadian(region.center.latitude)
-        let currentLongitude = toRadian(region.center.longitude)
-        let targetLatitude = toRadian(start_and_goal[1].location.latitude)
-        let targetLongitude = toRadian(start_and_goal[1].location.longitude)
-        
-        let longitudeDelta = targetLongitude - currentLongitude
-        let y = sin(longitudeDelta)
-        let x = cos(currentLatitude) * tan(targetLatitude) - sin(currentLatitude) * cos(longitudeDelta)
-        let p = atan2(y, x) * 180 / CGFloat.pi
-        
-        if p < 0 {
-            destinationDirection = 360 + atan2(y, x) * 180 / CGFloat.pi
-        } else {
-            destinationDirection = atan2(y, x) * 180 / CGFloat.pi
-        }
-        
-        if (destinationDirection < headingDirection) {
-            destinationDirection = headingDirection - destinationDirection
-        } else {
+        if (places["goal"] != nil) {
+            let currentLatitude = toRadian(region.center.latitude)
+            let currentLongitude = toRadian(region.center.longitude)
+            let targetLatitude = toRadian(places["goal"]??.location.latitude ?? 0)
+            let targetLongitude = toRadian(places["goal"]??.location.longitude ?? 0)
+            
+            let longitudeDelta = targetLongitude - currentLongitude
+            let y = sin(longitudeDelta)
+            let x = cos(currentLatitude) * tan(targetLatitude) - sin(currentLatitude) * cos(longitudeDelta)
+            let p = atan2(y, x) * 180 / CGFloat.pi
+            
+            if p < 0 {
+                destinationDirection = 360 + atan2(y, x) * 180 / CGFloat.pi
+            } else {
+                destinationDirection = atan2(y, x) * 180 / CGFloat.pi
+            }
+            
             destinationDirection -= headingDirection
         }
     }
@@ -87,16 +107,88 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     func toRadian(_ angle: CGFloat) -> CGFloat {
         return angle * CGFloat.pi / 180
     }
-}
-
-struct IdentifiablePlace: Identifiable {
-    let id: UUID
-    let location: CLLocationCoordinate2D
-    let title: String
     
-    init(id: UUID = UUID(), latitude: Double, longitude: Double, title: String) {
-        self.id = id
-        self.location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        self.title = title
+    func setDestination(_ destination: IdentifiablePlace) {
+        places["start"] = IdentifiablePlace(location: region.center, title: "")
+        places["goal"] = destination
     }
 }
+
+
+class LocationSearcher: NSObject, ObservableObject {
+    
+    let request = MKLocalSearch.Request()
+    @Published var results: [MKMapItem] = []
+    
+    func setRegion(_ region: MKCoordinateRegion) {
+        request.region = region
+    }
+    
+    func updateQueryText(_ text: String) {
+        request.naturalLanguageQuery = text
+        executeQuery()
+    }
+    
+    func executeQuery() {
+        if (request.naturalLanguageQuery != "") {
+            let search = MKLocalSearch(request: request)
+            search.start { response, _ in
+                guard let response = response else {
+                    return
+                }
+                
+                self.results = response.mapItems
+            }
+        }
+    }
+    
+    func getLocationName(_ location: MKMapItem) -> String? {
+        return location.name
+    }
+    
+    func getLocationPointOfInterestCategory(_ location: MKMapItem) -> MKPointOfInterestCategory? {
+        return location.pointOfInterestCategory
+    }
+    
+    func getLocationPointOfInterestCategoryRawValue(_ location: MKMapItem) -> String? {
+        return location.pointOfInterestCategory?.rawValue
+    }
+    
+    func getLocationCoordinate(_ location: MKMapItem) -> CLLocationCoordinate2D {
+        return location.placemark.coordinate
+    }
+    
+//    func getLocationPostalAddress(_ location: MKMapItem) -> CNPostalAddress {
+//        return location.placemark.postalAddress
+//    }
+}
+
+
+// I made this class but never use.
+class SearchCompleter: NSObject, ObservableObject, MKLocalSearchCompleterDelegate {
+    
+    let searchCompleter = MKLocalSearchCompleter()
+    @Published var results: [MKLocalSearchCompletion] = []
+    
+    override init() {
+        super.init()
+        searchCompleter.delegate = self
+        searchCompleter.resultTypes = .pointOfInterest
+    }
+    
+    func setRegion(_ region: MKCoordinateRegion) {
+        searchCompleter.region = region
+    }
+    
+    func updateQueryText(_ text: String) {
+        searchCompleter.queryFragment = text
+        if (text == "") {
+            results = []
+        }
+    }
+    
+    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        results = completer.results
+    }
+}
+
