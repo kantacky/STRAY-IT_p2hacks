@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F141FF6329486B3D003CA1CF /* SearchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F141FF6229486B3D003CA1CF /* SearchButton.swift */; };
+		F141FF662948A1FC003CA1CF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F141FF652948A1FC003CA1CF /* Launch Screen.storyboard */; };
 		F179EBC0294579C600C597F6 /* STRAY_ITApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBBF294579C600C597F6 /* STRAY_ITApp.swift */; };
 		F179EBC2294579C600C597F6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBC1294579C600C597F6 /* ContentView.swift */; };
 		F179EBC4294579C800C597F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F179EBC3294579C800C597F6 /* Assets.xcassets */; };
@@ -39,6 +40,8 @@
 
 /* Begin PBXFileReference section */
 		F141FF6229486B3D003CA1CF /* SearchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchButton.swift; sourceTree = "<group>"; };
+		F141FF642948A0E1003CA1CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F141FF652948A1FC003CA1CF /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		F179EBBC294579C600C597F6 /* STRAY-IT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "STRAY-IT.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F179EBBF294579C600C597F6 /* STRAY_ITApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STRAY_ITApp.swift; sourceTree = "<group>"; };
 		F179EBC1294579C600C597F6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -107,7 +110,9 @@
 				F179EBEA2945863B00C597F6 /* Views */,
 				F179EBF029458DC300C597F6 /* Models */,
 				F179EBC3294579C800C597F6 /* Assets.xcassets */,
+				F141FF652948A1FC003CA1CF /* Launch Screen.storyboard */,
 				F179EBC5294579C800C597F6 /* STRAY_IT.entitlements */,
+				F141FF642948A0E1003CA1CF /* Info.plist */,
 				F179EBC6294579C800C597F6 /* Preview Content */,
 			);
 			path = "STRAY-IT";
@@ -277,6 +282,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F141FF662948A1FC003CA1CF /* Launch Screen.storyboard in Resources */,
 				F179EBC8294579C800C597F6 /* Preview Assets.xcassets in Resources */,
 				F179EBC4294579C800C597F6 /* Assets.xcassets in Resources */,
 			);
@@ -457,7 +463,8 @@
 		F179EBE2294579C800C597F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIconLight AppIconDark";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDark;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "STRAY-IT/STRAY_IT.entitlements";
 				CODE_SIGN_STYLE = Automatic;
@@ -467,6 +474,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "STRAY-IT/Info.plist";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -474,6 +482,7 @@
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -496,7 +505,8 @@
 		F179EBE3294579C800C597F6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIconLight AppIconDark";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconDark;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "STRAY-IT/STRAY_IT.entitlements";
 				CODE_SIGN_STYLE = Automatic;
@@ -506,6 +516,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "STRAY-IT/Info.plist";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -513,6 +524,7 @@
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
