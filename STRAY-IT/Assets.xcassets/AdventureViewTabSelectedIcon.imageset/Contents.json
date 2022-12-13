@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "MarkerLight.svg",
+      "filename" : "AdventureViewTabSelectedIconLight.svg",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "MarkerDark.svg",
+      "filename" : "AdventureViewTabSelectedIconDark.svg",
       "idiom" : "universal"
     }
   ],
