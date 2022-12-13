@@ -111,11 +111,14 @@ extension LocationManager {
     func setDestination(_ destination: IdentifiablePlace) {
         places["start"] = IdentifiablePlace(location: region.center, title: "")
         places["goal"] = destination
+        
+        calculateDelta()
+        calculateDestinationDirection()
     }
 }
 
 
-class LocationSearcher: NSObject, ObservableObject {
+class LocationSearcher {
     
     let request = MKLocalSearch.Request()
     @Published var results: [MKMapItem] = []
@@ -126,6 +129,7 @@ class LocationSearcher: NSObject, ObservableObject {
     
     func updateQueryText(_ text: String) {
         request.naturalLanguageQuery = text
+        
         executeQuery()
     }
     
@@ -158,3 +162,4 @@ class LocationSearcher: NSObject, ObservableObject {
         return location.placemark.coordinate
     }
 }
+
