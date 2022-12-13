@@ -33,7 +33,7 @@ struct IdentifiablePlace: Identifiable {
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     let manager = CLLocationManager()
     
-    @Published var region: MKCoordinateRegion = MKCoordinateRegion()
+    @Published var region = MKCoordinateRegion()
     @Published var places: [String: IdentifiablePlace?] = ["start": nil, "goal": nil]
     @Published var headingDirection: Double = 0
     @Published var destinationDirection: Double = 0
@@ -157,38 +157,4 @@ class LocationSearcher: NSObject, ObservableObject {
     func getLocationCoordinate(_ location: MKMapItem) -> CLLocationCoordinate2D {
         return location.placemark.coordinate
     }
-    
-//    func getLocationPostalAddress(_ location: MKMapItem) -> CNPostalAddress {
-//        return location.placemark.postalAddress
-//    }
 }
-
-
-// I made this class but never use.
-class SearchCompleter: NSObject, ObservableObject, MKLocalSearchCompleterDelegate {
-    
-    let searchCompleter = MKLocalSearchCompleter()
-    @Published var results: [MKLocalSearchCompletion] = []
-    
-    override init() {
-        super.init()
-        searchCompleter.delegate = self
-        searchCompleter.resultTypes = .pointOfInterest
-    }
-    
-    func setRegion(_ region: MKCoordinateRegion) {
-        searchCompleter.region = region
-    }
-    
-    func updateQueryText(_ text: String) {
-        searchCompleter.queryFragment = text
-        if (text == "") {
-            results = []
-        }
-    }
-    
-    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        results = completer.results
-    }
-}
-
