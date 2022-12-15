@@ -145,6 +145,9 @@ class LocationSearcher {
             }
         }
     }
+}
+
+extension LocationSearcher {
     
     func getLocationName(_ location: MKMapItem) -> String? {
         return location.name
@@ -162,4 +165,3 @@ class LocationSearcher {
         return location.placemark.coordinate
     }
 }
-

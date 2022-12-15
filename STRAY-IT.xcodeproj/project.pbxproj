@@ -18,6 +18,7 @@
 		F179EBDE294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBDD294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift */; };
 		F179EBED2945867100C597F6 /* DirectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBEC2945867100C597F6 /* DirectionView.swift */; };
 		F179EBEF29458DBC00C597F6 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBEE29458DBC00C597F6 /* MapModel.swift */; };
+		F1C2EDE4294ABCFF009678D7 /* LandmarkIcons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1C2EDE3294ABCFF009678D7 /* LandmarkIcons.xcassets */; };
 		F1E95D682947FAD60020C98E /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E95D672947FAD60020C98E /* SearchView.swift */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 		F179EBDD294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STRAY_ITUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F179EBEC2945867100C597F6 /* DirectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionView.swift; sourceTree = "<group>"; };
 		F179EBEE29458DBC00C597F6 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
+		F1C2EDE3294ABCFF009678D7 /* LandmarkIcons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LandmarkIcons.xcassets; sourceTree = "<group>"; };
 		F1E95D672947FAD60020C98E /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -110,6 +112,7 @@
 				F179EBEA2945863B00C597F6 /* Views */,
 				F179EBF029458DC300C597F6 /* Models */,
 				F179EBC3294579C800C597F6 /* Assets.xcassets */,
+				F1C2EDE3294ABCFF009678D7 /* LandmarkIcons.xcassets */,
 				F141FF652948A1FC003CA1CF /* Launch Screen.storyboard */,
 				F179EBC5294579C800C597F6 /* STRAY_IT.entitlements */,
 				F141FF642948A0E1003CA1CF /* Info.plist */,
@@ -282,6 +285,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1C2EDE4294ABCFF009678D7 /* LandmarkIcons.xcassets in Resources */,
 				F141FF662948A1FC003CA1CF /* Launch Screen.storyboard in Resources */,
 				F179EBC8294579C800C597F6 /* Preview Assets.xcassets in Resources */,
 				F179EBC4294579C800C597F6 /* Assets.xcassets in Resources */,
