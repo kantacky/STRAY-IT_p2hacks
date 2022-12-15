@@ -26,12 +26,19 @@ struct DirectionView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
             
+            Landmarks()
+            
             SearchButton()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("Background"))
         .edgesIgnoringSafeArea(.top)
         .edgesIgnoringSafeArea(.horizontal)
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                manager.isDiscovering = true
+            }
+        }
     }
 }
 
