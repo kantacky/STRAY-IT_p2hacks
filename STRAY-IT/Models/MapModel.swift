@@ -30,11 +30,98 @@ struct IdentifiablePlace: Identifiable {
     }
 }
 
+class Landmark: Identifiable {
+    let id: UUID
+    let location: CLLocationCoordinate2D
+    let name: String
+    let pointOfInterestCategory: MKPointOfInterestCategory?
+    var direction: CGFloat
+    
+    init(id: UUID = UUID(), location: CLLocationCoordinate2D, name: String?, pointOfInterestCategory: MKPointOfInterestCategory?) {
+        self.id = id
+        self.location = location
+        self.name = name ?? "No Name"
+        self.pointOfInterestCategory = pointOfInterestCategory
+        self.direction = 0
+    }
+    
+    func setDirection(_ newDirection: CGFloat) {
+        direction = newDirection
+    }
+    
+    func getPointOfInterestCategoryImageName() -> String? {
+        if (pointOfInterestCategory != nil) {
+            switch (pointOfInterestCategory!) {
+            case .atm:
+                return "Atm"
+            case .bakery:
+                return "Bakery"
+            case .bank:
+                return "Bank"
+            case .cafe:
+                return "Cafe"
+            case .carRental:
+                return "CarRental"
+            case .fireStation:
+                return "FireStation"
+            case .fitnessCenter:
+                return "FitnessCenter"
+            case .foodMarket:
+                return "FoodMarket"
+            case .gasStation:
+                return "GasStation"
+            case .hospital:
+                return "Hospital"
+            case .hotel:
+                return "Hotel"
+            case .laundry:
+                return "Laundry"
+            case .library:
+                return "Library"
+            case .movieTheater:
+                return "MovieTheater"
+            case .museum:
+                return "Museum"
+            case .park:
+                return "Park"
+            case .parking:
+                return "Parking"
+            case .pharmacy:
+                return "Pharmacy"
+            case .police:
+                return "Police"
+            case .postOffice:
+                return "PostOffice"
+            case .publicTransport:
+                return "PublicTransport"
+            case .restaurant:
+                return "Restaurant"
+            case .restroom:
+                return "Restroom"
+            case .school:
+                return "School"
+            case .store:
+                return "Store"
+            case .university:
+                return "University"
+            default:
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+}
+
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     let manager = CLLocationManager()
+    let landmarkSearcher = LandmarkSearcher()
     
+    @Published var isDiscovering = false
     @Published var region = MKCoordinateRegion()
+    private var landmarksRegion = MKCoordinateRegion()
     @Published var places: [String: IdentifiablePlace?] = ["start": nil, "goal": nil]
+    @Published var landmarks: [Landmark] = []
     @Published var headingDirection: Double = 0
     @Published var destinationDirection: Double = 0
     @Published var delta: Double = 0
@@ -58,49 +145,45 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 latitudinalMeters: 1000.0,
                 longitudinalMeters: 1000.0
             )
+            
+            landmarksRegion = MKCoordinateRegion(
+                center: center,
+                latitudinalMeters: 30.0,
+                longitudinalMeters: 30.0
+            )
         }
         
-        calculateDelta()
-        calculateDestinationDirection()
+        if (isDiscovering) {
+            landmarkSearcher.searchNearHear(landmarksRegion)
+            makeLandmarkList()
+            calculateLandmarksDirection()
+            calculateDeltaFromHereToGoal()
+            calculateDestinationDirection()
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading heading: CLHeading) {
         headingDirection = heading.magneticHeading
         
-        calculateDelta()
-        calculateDestinationDirection()
+        if (isDiscovering) {
+            calculateDeltaFromHereToGoal()
+            calculateDestinationDirection()
+            calculateLandmarksDirection()
+        }
     }
 }
 
 extension LocationManager {
     
-    func calculateDelta() {
+    func calculateDelta(_ originalCoordinate: CLLocation, _ targetCoordinate: CLLocation) -> CGFloat {
+        return originalCoordinate.distance(from: targetCoordinate)
+    }
+    
+    func calculateDeltaFromHereToGoal() {
         if (places["goal"] != nil) {
             let currentCoordinate = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
             let goalCoordinate = CLLocation(latitude: places["goal"]??.location.latitude ?? 0, longitude: places["goal"]??.location.longitude ?? 0)
-            delta = currentCoordinate.distance(from: goalCoordinate)
-        }
-    }
-    
-    func calculateDestinationDirection() {
-        if (places["goal"] != nil) {
-            let currentLatitude = toRadian(region.center.latitude)
-            let currentLongitude = toRadian(region.center.longitude)
-            let targetLatitude = toRadian(places["goal"]??.location.latitude ?? 0)
-            let targetLongitude = toRadian(places["goal"]??.location.longitude ?? 0)
-            
-            let longitudeDelta = targetLongitude - currentLongitude
-            let y = sin(longitudeDelta)
-            let x = cos(currentLatitude) * tan(targetLatitude) - sin(currentLatitude) * cos(longitudeDelta)
-            let p = atan2(y, x) * 180 / CGFloat.pi
-            
-            if p < 0 {
-                destinationDirection = 360 + atan2(y, x) * 180 / CGFloat.pi
-            } else {
-                destinationDirection = atan2(y, x) * 180 / CGFloat.pi
-            }
-            
-            destinationDirection -= headingDirection
+            delta = calculateDelta(currentCoordinate, goalCoordinate)
         }
     }
     
@@ -112,8 +195,72 @@ extension LocationManager {
         places["start"] = IdentifiablePlace(location: region.center, title: "")
         places["goal"] = destination
         
-        calculateDelta()
+        calculateDeltaFromHereToGoal()
         calculateDestinationDirection()
+    }
+    
+    func calculateDirection(_ originalCoordinate: CLLocationCoordinate2D, _ targetCoordinate: CLLocationCoordinate2D) -> CGFloat {
+        var direction: CGFloat
+        
+        let originalLatitude = toRadian(originalCoordinate.latitude)
+        let originalLongitude = toRadian(originalCoordinate.longitude)
+        let targetLatitude = toRadian(targetCoordinate.latitude)
+        let targetLongitude = toRadian(targetCoordinate.longitude)
+        
+        let longitudeDelta = targetLongitude - originalLongitude
+        let y = sin(longitudeDelta)
+        let x = cos(originalLatitude) * tan(targetLatitude) - sin(originalLatitude) * cos(longitudeDelta)
+        let p = atan2(y, x) * 180 / CGFloat.pi
+        
+        if p < 0 {
+            direction = 360 + atan2(y, x) * 180 / CGFloat.pi
+        } else {
+            direction = atan2(y, x) * 180 / CGFloat.pi
+        }
+        
+        direction -= headingDirection
+        
+        return direction
+    }
+    
+    func calculateDestinationDirection() {
+        if (places["goal"] != nil) {
+            destinationDirection = calculateDirection(region.center, places["goal"]??.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0))
+        }
+    }
+    
+    func makeLandmarkList() {
+        for item in landmarkSearcher.results {
+            let name = landmarkSearcher.getLocationName(item)
+            let location = landmarkSearcher.getLocationCoordinate(item)
+            let category = landmarkSearcher.getLocationPointOfInterestCategory(item)
+            var isMultiple = false
+            for landmark in landmarks {
+                if (landmark.location.latitude == location.latitude && landmark.location.longitude == location.longitude) {
+                    isMultiple = true
+                }
+                if (calculateDelta(CLLocation(latitude: landmark.location.latitude, longitude: landmark.location.longitude), CLLocation(latitude: location.latitude, longitude: location.longitude)) > 30) {
+                    landmarks.remove(at: landmarks.firstIndex(where: {$0.id == landmark.id})!)
+                }
+            }
+            if (!isMultiple) {
+                landmarks.append(Landmark(location: location, name: name, pointOfInterestCategory: category))
+            }
+        }
+    }
+    
+    func calculateLandmarksDirection() {
+        landmarks.forEach { item in
+            item.setDirection(calculateDirection(region.center, item.location))
+        }
+    }
+    
+    func calculatePosition(_ radius: CGFloat, _ degrees: CGFloat) -> [CGFloat] {
+        let theta = toRadian(degrees)
+        let x = radius * cos(theta)
+        let y = radius * sin(theta)
+        
+        return [x, y]
     }
 }
 
@@ -121,7 +268,13 @@ extension LocationManager {
 class LocationSearcher {
     
     let request = MKLocalSearch.Request()
+    var search: MKLocalSearch
     @Published var results: [MKMapItem] = []
+    
+    init() {
+        request.resultTypes = [.address, .pointOfInterest]
+        search = MKLocalSearch(request: request)
+    }
     
     func setRegion(_ region: MKCoordinateRegion) {
         request.region = region
@@ -130,19 +283,23 @@ class LocationSearcher {
     func updateQueryText(_ text: String) {
         request.naturalLanguageQuery = text
         
-        executeQuery()
+        searchQuery()
+    }
+    
+    func searchQuery() {
+        if (request.naturalLanguageQuery != "") {
+            executeQuery()
+        }
     }
     
     func executeQuery() {
-        if (request.naturalLanguageQuery != "") {
-            let search = MKLocalSearch(request: request)
-            search.start { response, _ in
-                guard let response = response else {
-                    return
-                }
-                
-                self.results = response.mapItems
+        search = MKLocalSearch(request: request)
+        search.start { response, _ in
+            guard let response = response else {
+                return
             }
+            
+            self.results = response.mapItems
         }
     }
 }
@@ -163,5 +320,18 @@ extension LocationSearcher {
     
     func getLocationCoordinate(_ location: MKMapItem) -> CLLocationCoordinate2D {
         return location.placemark.coordinate
+    }
+}
+
+class LandmarkSearcher: LocationSearcher {
+    private var timestamp = Date()
+    
+    func searchNearHear(_ region: MKCoordinateRegion) {
+        if (timestamp.timeIntervalSince(.now) < -2) {
+            setRegion(region)
+            updateQueryText("")
+            executeQuery()
+            timestamp = .now
+        }
     }
 }
