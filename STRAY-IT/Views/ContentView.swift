@@ -30,14 +30,14 @@ struct ContentView: View {
 //                    }
 //                    .tag(1)
 //
-//                CheatView()
-//                    .tabItem {
-//                        Image(selectedTab == 2 ? "CheatViewTabSelectedIcon" : "CheatViewTabUnselectedIcon")
-//
-//                            .font(.system(size: 8))
-//                        Text("Cheat")
-//                    }
-//                    .tag(2)
+                CheatingView()
+                    .tabItem {
+                        Image(selectedTab == 2 ? "CheatingViewTabSelectedIcon" : "CheatingViewTabUnselectedIcon")
+
+                            .font(.system(size: 8))
+                        Text("Cheating")
+                    }
+                    .tag(2)
             }
         }
     }
