@@ -33,9 +33,9 @@ struct SearchView: View {
             .padding()
             
             ScrollView {
-//                if ($searcher.isSearching) {
-//                    ProgressView()
-//                } else {
+                if ($searcher.wrappedValue.search.isSearching) {
+                    ProgressView()
+                } else {
                     ForEach(searcher.results, id: \.self) { result in
                         Button (action: {
                             searchBarIsFocused = false
@@ -67,13 +67,14 @@ struct SearchView: View {
                         Divider()
                             .padding(.horizontal)
                     }
-//                }
+                }
             }
             
             Spacer()
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                manager.isDiscovering = false
                 searchBarIsFocused = true
             }
         }
