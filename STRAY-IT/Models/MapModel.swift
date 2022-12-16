@@ -125,6 +125,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var headingDirection: Double = 0
     @Published var destinationDirection: Double = 0
     @Published var delta: Double = 0
+    private var landmarksRadius: CLLocationDistance = 50.0
     
     override init() {
         super.init()
@@ -148,13 +149,13 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             
             landmarksRegion = MKCoordinateRegion(
                 center: center,
-                latitudinalMeters: 30.0,
-                longitudinalMeters: 30.0
+                latitudinalMeters: landmarksRadius,
+                longitudinalMeters: landmarksRadius
             )
         }
         
         if (isDiscovering) {
-            landmarkSearcher.searchNearHear(landmarksRegion)
+            landmarkSearcher.searchNearHear(center: region.center, radius: region.span.latitudeDelta)
             makeLandmarkList()
             calculateLandmarksDirection()
             calculateDeltaFromHereToGoal()
@@ -199,7 +200,7 @@ extension LocationManager {
         calculateDestinationDirection()
     }
     
-    func calculateDirection(_ originalCoordinate: CLLocationCoordinate2D, _ targetCoordinate: CLLocationCoordinate2D) -> CGFloat {
+    private func calculateDirection(_ originalCoordinate: CLLocationCoordinate2D, _ targetCoordinate: CLLocationCoordinate2D) -> CGFloat {
         var direction: CGFloat
         
         let originalLatitude = toRadian(originalCoordinate.latitude)
@@ -223,13 +224,13 @@ extension LocationManager {
         return direction
     }
     
-    func calculateDestinationDirection() {
+    private func calculateDestinationDirection() {
         if (places["goal"] != nil) {
             destinationDirection = calculateDirection(region.center, places["goal"]??.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0))
         }
     }
     
-    func makeLandmarkList() {
+    private func makeLandmarkList() {
         for item in landmarkSearcher.results {
             let name = landmarkSearcher.getLocationName(item)
             let location = landmarkSearcher.getLocationCoordinate(item)
@@ -239,7 +240,7 @@ extension LocationManager {
                 if (landmark.location.latitude == location.latitude && landmark.location.longitude == location.longitude) {
                     isMultiple = true
                 }
-                if (calculateDelta(CLLocation(latitude: landmark.location.latitude, longitude: landmark.location.longitude), CLLocation(latitude: location.latitude, longitude: location.longitude)) > 30) {
+                if (calculateDelta(CLLocation(latitude: landmark.location.latitude, longitude: landmark.location.longitude), CLLocation(latitude: location.latitude, longitude: location.longitude)) > landmarksRadius) {
                     landmarks.remove(at: landmarks.firstIndex(where: {$0.id == landmark.id})!)
                 }
             }
@@ -249,7 +250,7 @@ extension LocationManager {
         }
     }
     
-    func calculateLandmarksDirection() {
+    private func calculateLandmarksDirection() {
         landmarks.forEach { item in
             item.setDirection(calculateDirection(region.center, item.location))
         }
@@ -267,32 +268,85 @@ extension LocationManager {
 
 class LocationSearcher {
     
-    let request = MKLocalSearch.Request()
-    var search: MKLocalSearch
+    private var request: MKLocalSearch.Request
+    private var search: MKLocalSearch
     @Published var results: [MKMapItem] = []
     
     init() {
+        request = MKLocalSearch.Request()
         request.resultTypes = [.address, .pointOfInterest]
         search = MKLocalSearch(request: request)
     }
     
-    func setRegion(_ region: MKCoordinateRegion) {
+    public func setRegion(_ region: MKCoordinateRegion) {
         request.region = region
     }
     
-    func updateQueryText(_ text: String) {
+    public func updateQueryText(_ text: String) {
         request.naturalLanguageQuery = text
         
         searchQuery()
     }
     
-    func searchQuery() {
+    public func executeQuery() {
+        search = MKLocalSearch(request: request)
+        search.start { response, _ in
+            guard let response = response else {
+                return
+            }
+            
+            self.results = response.mapItems
+        }
+    }
+    
+    public func searchQuery() {
         if (request.naturalLanguageQuery != "") {
             executeQuery()
         }
     }
+}
+
+extension LocationSearcher {
     
-    func executeQuery() {
+    public func getLocationName(_ location: MKMapItem) -> String? {
+        return location.name
+    }
+    
+    public func getLocationPointOfInterestCategory(_ location: MKMapItem) -> MKPointOfInterestCategory? {
+        return location.pointOfInterestCategory
+    }
+    
+    public func getLocationPointOfInterestCategoryRawValue(_ location: MKMapItem) -> String? {
+        return location.pointOfInterestCategory?.rawValue
+    }
+    
+    public func getLocationCoordinate(_ location: MKMapItem) -> CLLocationCoordinate2D {
+        return location.placemark.coordinate
+    }
+    
+    public func isSearching() -> Bool {
+        return search.isSearching
+    }
+}
+
+class LandmarkSearcher {
+    
+    private var request: MKLocalPointsOfInterestRequest
+    private var search: MKLocalSearch
+    @Published var results: [MKMapItem]
+    
+    init() {
+        request = MKLocalPointsOfInterestRequest(center: CLLocationCoordinate2D(latitude: 0, longitude: 0), radius: 1)
+        search = MKLocalSearch(request: request)
+        results = []
+    }
+    
+    public func makeRequest(center: CLLocationCoordinate2D, radius: CLLocationDistance) {
+        request = MKLocalPointsOfInterestRequest(center: center, radius: radius)
+    }
+    
+    public func searchNearHear(center: CLLocationCoordinate2D, radius: CLLocationDistance) {
+        makeRequest(center: center, radius: radius)
         search = MKLocalSearch(request: request)
         search.start { response, _ in
             guard let response = response else {
@@ -304,34 +358,21 @@ class LocationSearcher {
     }
 }
 
-extension LocationSearcher {
+extension LandmarkSearcher {
     
-    func getLocationName(_ location: MKMapItem) -> String? {
+    public func getLocationName(_ location: MKMapItem) -> String? {
         return location.name
     }
     
-    func getLocationPointOfInterestCategory(_ location: MKMapItem) -> MKPointOfInterestCategory? {
+    public func getLocationPointOfInterestCategory(_ location: MKMapItem) -> MKPointOfInterestCategory? {
         return location.pointOfInterestCategory
     }
     
-    func getLocationPointOfInterestCategoryRawValue(_ location: MKMapItem) -> String? {
+    public func getLocationPointOfInterestCategoryRawValue(_ location: MKMapItem) -> String? {
         return location.pointOfInterestCategory?.rawValue
     }
     
-    func getLocationCoordinate(_ location: MKMapItem) -> CLLocationCoordinate2D {
+    public func getLocationCoordinate(_ location: MKMapItem) -> CLLocationCoordinate2D {
         return location.placemark.coordinate
-    }
-}
-
-class LandmarkSearcher: LocationSearcher {
-    private var timestamp = Date()
-    
-    func searchNearHear(_ region: MKCoordinateRegion) {
-        if (timestamp.timeIntervalSince(.now) < -2) {
-            setRegion(region)
-            updateQueryText("")
-            executeQuery()
-            timestamp = .now
-        }
     }
 }
