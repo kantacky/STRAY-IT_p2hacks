@@ -30,7 +30,7 @@ struct ContentView: View {
 //                    }
 //                    .tag(1)
 //
-//                CheatView()
+//                CheattingView()
 //                    .tabItem {
 //                        Image(selectedTab == 2 ? "CheatViewTabSelectedIcon" : "CheatViewTabUnselectedIcon")
 //

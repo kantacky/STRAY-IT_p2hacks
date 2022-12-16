@@ -10,7 +10,7 @@ import SwiftUI
 struct SearchView: View {
     @EnvironmentObject var viewStates: ViewStates
     @EnvironmentObject var manager: LocationManager
-    @ObservedObject var searcher = LocationSearcher()
+    @State var searcher = LocationSearcher()
     @State private var queryText: String = ""
     @FocusState private var searchBarIsFocused: Bool
     
@@ -33,36 +33,40 @@ struct SearchView: View {
             .padding()
             
             ScrollView {
-                ForEach(searcher.results, id: \.self) { result in
-                    Button (action: {
-                        searchBarIsFocused = false
-                        
-                        let coordinate = searcher.getLocationCoordinate(result)
-                        let title = searcher.getLocationName(result)
-                        manager.setDestination(IdentifiablePlace(latitude: coordinate.latitude, longitude: coordinate.longitude, title: title ?? ""))
-                        
-                        viewStates.searchViewIsShowing = false
-                    }) {
-                        HStack {
-                            VStack {
-                                HStack {
-                                    Text(searcher.getLocationName(result) ?? "")
-                                    Spacer()
-                                }
-                                .padding(.vertical, 2.0)
-                            }
-                            .multilineTextAlignment(.leading)
+                if ($searcher.wrappedValue.isSearching()) {
+                    ProgressView()
+                } else {
+                    ForEach(searcher.results, id: \.self) { result in
+                        Button (action: {
+                            searchBarIsFocused = false
                             
-                            Spacer()
+                            let coordinate = searcher.getLocationCoordinate(result)
+                            let title = searcher.getLocationName(result)
+                            manager.setDestination(IdentifiablePlace(latitude: coordinate.latitude, longitude: coordinate.longitude, title: title ?? ""))
+                            
+                            viewStates.searchViewIsShowing = false
+                        }) {
+                            HStack {
+                                VStack {
+                                    HStack {
+                                        Text(searcher.getLocationName(result) ?? "")
+                                        Spacer()
+                                    }
+                                    .padding(.vertical, 2.0)
+                                }
+                                .multilineTextAlignment(.leading)
+                                
+                                Spacer()
+                            }
+                            .foregroundColor(Color("AccentColor"))
                         }
-                        .foregroundColor(Color("AccentColor"))
+                        .padding(.top, 8.0)
+                        .padding(.bottom, 2.0)
+                        .padding(.horizontal, 32.0)
+                        
+                        Divider()
+                            .padding(.horizontal)
                     }
-                    .padding(.top, 8.0)
-                    .padding(.bottom, 2.0)
-                    .padding(.horizontal, 32.0)
-                    
-                    Divider()
-                        .padding(.horizontal)
                 }
             }
             
@@ -70,7 +74,8 @@ struct SearchView: View {
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                searchBarIsFocused = false
+                manager.isDiscovering = false
+                searchBarIsFocused = true
             }
         }
         .onChange(of: queryText, perform: { newValue in

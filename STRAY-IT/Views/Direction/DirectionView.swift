@@ -21,6 +21,8 @@ struct DirectionView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .rotationEffect(.degrees(manager.destinationDirection))
             
+            Landmarks()
+            
             Text("\(Int(manager.delta)) m")
                 .foregroundColor(Color("AccentFontColor"))
                 .font(.title2)
@@ -32,6 +34,11 @@ struct DirectionView: View {
         .background(Color("Background"))
         .edgesIgnoringSafeArea(.top)
         .edgesIgnoringSafeArea(.horizontal)
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                manager.isDiscovering = true
+            }
+        }
     }
 }
 
