@@ -33,7 +33,7 @@ struct SearchView: View {
             .padding()
             
             ScrollView {
-                if ($searcher.wrappedValue.search.isSearching) {
+                if ($searcher.wrappedValue.isSearching()) {
                     ProgressView()
                 } else {
                     ForEach(searcher.results, id: \.self) { result in
