@@ -21,12 +21,12 @@ struct DirectionView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .rotationEffect(.degrees(manager.destinationDirection))
             
+            Landmarks()
+            
             Text("\(Int(manager.delta)) m")
                 .foregroundColor(Color("AccentFontColor"))
                 .font(.title2)
                 .fontWeight(.semibold)
-            
-            Landmarks()
             
             SearchButton()
         }

@@ -114,6 +114,7 @@ class Landmark: Identifiable {
 }
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+    
     let manager = CLLocationManager()
     let landmarkSearcher = LandmarkSearcher()
     

@@ -22,9 +22,15 @@ struct Landmarks: View {
 //                        clockwise: false
 //                    )
 //                }
-//                .stroke(lineWidth: 1)
+//                .stroke(lineWidth: 0.5)
 //                .fill(Color("AccentColor"))
 //                .frame(width: geometry.size.width * 0.8, height: geometry.size.width * 0.8)
+                
+                Image("Circle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: geometry.size.width * 0.8, height: geometry.size.width * 0.8)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
                 
                 ForEach(manager.landmarks) { item in
                     if (item.getPointOfInterestCategoryImageName() != nil) {
