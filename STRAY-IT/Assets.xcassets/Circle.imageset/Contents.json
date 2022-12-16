@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "LaunchIconLight.png",
+      "filename" : "CircleLight.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "LaunchIconDark.png",
+      "filename" : "CircleDark.png",
       "idiom" : "universal"
     }
   ],
