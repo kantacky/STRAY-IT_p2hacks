@@ -37,17 +37,13 @@ class MapViewManager: NSObject, MKMapViewDelegate{
                 reuseIdentifier: identifier
             )
             
-            //            annotationView.markerTintColor = UIColor(named: "RouteColor")
-            //            annotationView.glyphImage = UIImage(named: "Marker")
             if (annotationView.annotation?.subtitle == "Current Location") {
-                //                annotationView.image = UIImage(named: "DirectionSmall")!
-                //                    .rotatedBy(degree: headingDirection)
                 annotationView.markerTintColor = UIColor(named: "AccentColor")
                 annotationView.glyphImage = UIImage(systemName: "location.fill")
                 
                 return annotationView
             }
-            //            annotationView.image = UIImage(named: "Marker")
+            
             annotationView.markerTintColor = UIColor(named: "RouteColor")
             annotationView.glyphImage = UIImage(named: "Marker")
             

@@ -20,8 +20,8 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     let localSearchManagerByQuery = LocalSearchManager.SearchByQuery()
     let localSearchManagerByLocation = LocalSearchManager.SearchByLocation()
-    var adventureMapViewManager = MapViewManager()
-    var cheatingMapViewManager = MapViewManager()
+    var adventureMapViewManager: MapViewManager!
+    var cheatingMapViewManager: MapViewManager!
     
     @Published var whichView: Views
     @Published var adventureCurrentLocationMark: IdentifiablePlace!
@@ -89,10 +89,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 extension LocationManager {
     
     public func setDestination(_ destination: IdentifiablePlace) {
-        adventureMapViewManager = MapViewManager()
-        cheatingMapViewManager = MapViewManager()
-        adventureCurrentLocationMark = nil
-        cheatingCurrentLocationMark = nil
+        clearMapViewInstances()
         start_and_goal = [IdentifiablePlace(coordinate: region.center, title: nil, subtitle: nil), destination]
         
         getDistanceFromHereToGoal()
@@ -116,88 +113,107 @@ extension LocationManager {
 
 extension LocationManager {
     
+    func clearMapViewInstances() {
+        adventureMapViewManager = nil
+        cheatingMapViewManager = nil
+        adventureCurrentLocationMark = nil
+        cheatingCurrentLocationMark = nil
+    }
+    
     func initAdventureMapView() {
-        adventureMapViewManager.mapViewObject.addAnnotation(start_and_goal[0])
-        adventureMapViewManager.mapViewObject.addAnnotation(start_and_goal[1])
-        
-        adventureDirectionRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[0].coordinate))
-        adventureDirectionRequest.destination = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[1].coordinate))
-        adventureDirectionRequest.transportType = MKDirectionsTransportType.walking
-        
-        let directions = MKDirections(request: adventureDirectionRequest)
-        directions.calculate { (response, error) in
-            guard let directionResponse = response else {
-                if let error = error {
-                    print(error.localizedDescription)
+        if (adventureMapViewManager == nil) {
+            adventureMapViewManager = MapViewManager()
+            
+            adventureMapViewManager.mapViewObject.addAnnotation(start_and_goal[0])
+            adventureMapViewManager.mapViewObject.addAnnotation(start_and_goal[1])
+            
+            adventureDirectionRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[0].coordinate))
+            adventureDirectionRequest.destination = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[1].coordinate))
+            adventureDirectionRequest.transportType = MKDirectionsTransportType.walking
+            
+            let directions = MKDirections(request: adventureDirectionRequest)
+            directions.calculate { (response, error) in
+                guard let directionResponse = response else {
+                    if let error = error {
+                        print(error.localizedDescription)
+                    }
+                    return
                 }
-                return
+                
+                let route = directionResponse.routes[0]
+                
+                if (self.whichView == .cheating) {
+                    self.adventureMapViewManager.mapViewObject.addOverlay(route.polyline, level: .aboveRoads)
+                }
+                
+                let rect = route.polyline.boundingMapRect
+                var rectRegion = MKCoordinateRegion(rect)
+                rectRegion.span.latitudeDelta = rectRegion.span.latitudeDelta * 1.4
+                rectRegion.span.longitudeDelta = rectRegion.span.longitudeDelta * 1.4
+                self.adventureMapViewManager.mapViewObject.setRegion(rectRegion, animated: true)
             }
-            
-            let route = directionResponse.routes[0]
-            
-            if (self.whichView == .cheating) {
-                self.adventureMapViewManager.mapViewObject.addOverlay(route.polyline, level: .aboveRoads)
-            }
-            
-            let rect = route.polyline.boundingMapRect
-            var rectRegion = MKCoordinateRegion(rect)
-            rectRegion.span.latitudeDelta = rectRegion.span.latitudeDelta * 1.4
-            rectRegion.span.longitudeDelta = rectRegion.span.longitudeDelta * 1.4
-            self.adventureMapViewManager.mapViewObject.setRegion(rectRegion, animated: true)
         }
     }
     
     func initCheatingMapView() {
-        cheatingMapViewManager.mapViewObject.addAnnotation(start_and_goal[0])
-        cheatingMapViewManager.mapViewObject.addAnnotation(start_and_goal[1])
-        
-        cheatingDirectionRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[0].coordinate))
-        cheatingDirectionRequest.destination = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[1].coordinate))
-        cheatingDirectionRequest.transportType = MKDirectionsTransportType.walking
-        
-        let directions = MKDirections(request: cheatingDirectionRequest)
-        directions.calculate { (response, error) in
-            guard let directionResponse = response else {
-                if let error = error {
-                    print(error.localizedDescription)
+        if (cheatingMapViewManager == nil) {
+            cheatingMapViewManager = MapViewManager()
+            
+            cheatingMapViewManager.mapViewObject.addAnnotation(start_and_goal[0])
+            cheatingMapViewManager.mapViewObject.addAnnotation(start_and_goal[1])
+            
+            cheatingDirectionRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[0].coordinate))
+            cheatingDirectionRequest.destination = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[1].coordinate))
+            cheatingDirectionRequest.transportType = MKDirectionsTransportType.walking
+            
+            let directions = MKDirections(request: cheatingDirectionRequest)
+            directions.calculate { (response, error) in
+                guard let directionResponse = response else {
+                    if let error = error {
+                        print(error.localizedDescription)
+                    }
+                    return
                 }
-                return
+                
+                let route = directionResponse.routes[0]
+                
+                self.cheatingMapViewManager.mapViewObject.addOverlay(route.polyline, level: .aboveRoads)
+                
+                let rect = route.polyline.boundingMapRect
+                var rectRegion = MKCoordinateRegion(rect)
+                rectRegion.span.latitudeDelta = rectRegion.span.latitudeDelta * 1.4
+                rectRegion.span.longitudeDelta = rectRegion.span.longitudeDelta * 1.4
+                self.cheatingMapViewManager.mapViewObject.setRegion(rectRegion, animated: true)
             }
-            
-            let route = directionResponse.routes[0]
-            
-            self.cheatingMapViewManager.mapViewObject.addOverlay(route.polyline, level: .aboveRoads)
-            
-            let rect = route.polyline.boundingMapRect
-            var rectRegion = MKCoordinateRegion(rect)
-            rectRegion.span.latitudeDelta = rectRegion.span.latitudeDelta * 1.4
-            rectRegion.span.longitudeDelta = rectRegion.span.longitudeDelta * 1.4
-            self.cheatingMapViewManager.mapViewObject.setRegion(rectRegion, animated: true)
         }
     }
     
     func updateCurrentLocationOnAdventureMapView() {
-        if (adventureCurrentLocationMark == nil && region.center.latitude != start_and_goal[0].coordinate.latitude && region.center.longitude != start_and_goal[0].coordinate.longitude) {
-            adventureCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
-            adventureMapViewManager.headingDirection = headingDirection
-            adventureMapViewManager.mapViewObject.addAnnotation(adventureCurrentLocationMark)
-        } else {
-            var lineLocation: [CLLocationCoordinate2D] = [adventureCurrentLocationMark.coordinate, region.center]
-            let line = MKPolyline(coordinates: &lineLocation, count: 2)
-            adventureMapViewManager.mapViewObject.addOverlay(line, level: .aboveRoads)
-            adventureCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
-            adventureMapViewManager.headingDirection = headingDirection
+        if (adventureMapViewManager != nil) {
+            if (adventureCurrentLocationMark == nil) {
+                adventureCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+                adventureMapViewManager.headingDirection = headingDirection
+                adventureMapViewManager.mapViewObject.addAnnotation(adventureCurrentLocationMark)
+            } else {
+                var lineLocation: [CLLocationCoordinate2D] = [adventureCurrentLocationMark.coordinate, region.center]
+                let line = MKPolyline(coordinates: &lineLocation, count: 2)
+                adventureMapViewManager.mapViewObject.addOverlay(line, level: .aboveRoads)
+                adventureCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+                adventureMapViewManager.headingDirection = headingDirection
+            }
         }
     }
     
     func updateCurrentLocationOnCheatingMapView() {
-        if (cheatingCurrentLocationMark == nil && region.center.latitude != start_and_goal[0].coordinate.latitude && region.center.longitude != start_and_goal[0].coordinate.longitude) {
-            cheatingCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
-            cheatingMapViewManager.headingDirection = headingDirection
-            cheatingMapViewManager.mapViewObject.addAnnotation(cheatingCurrentLocationMark)
-        } else {
-            cheatingCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
-            adventureMapViewManager.headingDirection = headingDirection
+        if (cheatingMapViewManager != nil) {
+            if (cheatingCurrentLocationMark == nil) {
+                cheatingCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+                cheatingMapViewManager.headingDirection = headingDirection
+                cheatingMapViewManager.mapViewObject.addAnnotation(cheatingCurrentLocationMark)
+            } else {
+                cheatingCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+                cheatingMapViewManager.headingDirection = headingDirection
+            }
         }
     }
 }
