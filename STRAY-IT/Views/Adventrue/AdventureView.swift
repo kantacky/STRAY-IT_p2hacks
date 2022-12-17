@@ -8,13 +8,17 @@
 import SwiftUI
 
 struct AdventureView: View {
+    @EnvironmentObject var manager: LocationManager
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        UIMapView()
+            .edgesIgnoringSafeArea([.top, .horizontal])
     }
 }
 
 struct AdventureView_Previews: PreviewProvider {
     static var previews: some View {
         AdventureView()
+            .environmentObject(LocationManager())
     }
 }

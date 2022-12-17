@@ -42,7 +42,7 @@ struct SearchView: View {
                             
                             let coordinate = searcher.getLocationCoordinate(result)
                             let title = searcher.getLocationName(result)
-                            manager.setDestination(IdentifiablePlace(latitude: coordinate.latitude, longitude: coordinate.longitude, title: title ?? ""))
+                            manager.setDestination(IdentifiablePlace(latitude: coordinate.latitude, longitude: coordinate.longitude, title: title, subtitle: nil))
                             
                             viewStates.searchViewIsShowing = false
                         }) {
