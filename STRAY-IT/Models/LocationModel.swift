@@ -8,21 +8,24 @@
 import Foundation
 import MapKit
 
-struct IdentifiablePlace: Identifiable {
+class IdentifiablePlace: NSObject, MKAnnotation, Identifiable {
     let id: UUID
-    let location: CLLocationCoordinate2D
-    let title: String
+    let coordinate: CLLocationCoordinate2D
+    let title: String?
+    let subtitle: String?
     
-    init(id: UUID = UUID(), latitude: Double, longitude: Double, title: String) {
+    init(id: UUID = UUID(), latitude: Double, longitude: Double, title: String?, subtitle: String?) {
         self.id = id
-        self.location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        self.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         self.title = title
+        self.subtitle = subtitle
     }
     
-    init(id: UUID = UUID(), location: CLLocationCoordinate2D, title: String) {
+    init(id: UUID = UUID(), location: CLLocationCoordinate2D, title: String?, subtitle: String?) {
         self.id = id
-        self.location = location
+        self.coordinate = location
         self.title = title
+        self.subtitle = subtitle
     }
 }
 
@@ -117,7 +120,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var isDiscovering = false
     @Published var region = MKCoordinateRegion()
     private var landmarksRegion = MKCoordinateRegion()
-    @Published var places: [String: IdentifiablePlace?] = ["start": nil, "goal": nil]
+    @Published var places: [String: IdentifiablePlace]
     @Published var landmarks: [Landmark] = []
     @Published var headingDirection: Double = 0
     @Published var destinationDirection: Double = 0
@@ -125,6 +128,8 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private var landmarksRadius: CLLocationDistance = 50.0
     
     override init() {
+        places = ["start": IdentifiablePlace(latitude: 0, longitude: 0, title: nil, subtitle: nil), "goal": IdentifiablePlace(latitude: 0, longitude: 0, title: nil, subtitle: nil)]
+        
         super.init()
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
@@ -180,7 +185,7 @@ extension LocationManager {
     func calculateDeltaFromHereToGoal() {
         if (places["goal"] != nil) {
             let currentCoordinate = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
-            let goalCoordinate = CLLocation(latitude: places["goal"]??.location.latitude ?? 0, longitude: places["goal"]??.location.longitude ?? 0)
+            let goalCoordinate = CLLocation(latitude: places["goal"]!.coordinate.latitude, longitude: places["goal"]!.coordinate.longitude)
             delta = calculateDelta(currentCoordinate, goalCoordinate)
         }
     }
@@ -190,7 +195,7 @@ extension LocationManager {
     }
     
     func setDestination(_ destination: IdentifiablePlace) {
-        places["start"] = IdentifiablePlace(location: region.center, title: "")
+        places["start"] = IdentifiablePlace(location: region.center, title: nil, subtitle: nil)
         places["goal"] = destination
         
         calculateDeltaFromHereToGoal()
@@ -223,7 +228,7 @@ extension LocationManager {
     
     private func calculateDestinationDirection() {
         if (places["goal"] != nil) {
-            destinationDirection = calculateDirection(region.center, places["goal"]??.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0))
+            destinationDirection = calculateDirection(region.center, places["goal"]!.coordinate)
         }
     }
     
