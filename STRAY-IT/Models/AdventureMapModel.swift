@@ -1,31 +1,31 @@
 //
-//  CheatingMapModel.swift
+//  AdventureMapModel.swift
 //  STRAY-IT
 //
-//  Created by inoue mei on 2022/12/17.
+//  Created by Kanta Oikawa on 2022/12/17.
 //
 
 import Foundation
 import MapKit
 import SwiftUI
 
-struct CheatingMapView: UIViewRepresentable {
+struct AdventureMapView: UIViewRepresentable {
     @EnvironmentObject var locationManager: LocationManager
     
     func makeUIView(context: Self.Context) -> UIViewType {
-        locationManager.initCheatingMapView()
+        locationManager.initAdventureMapView()
         
-        return locationManager.cheatingMapViewManager.mapViewObject
+        return locationManager.adventureMapViewManager.mapViewObject
     }
     
     func updateUIView(_ uiView: MKMapView, context: Self.Context) {
-        uiView.delegate = locationManager.cheatingMapViewManager
+        uiView.delegate = locationManager.adventureMapViewManager
     }
 }
 
-struct CheatingMapView_Previews: PreviewProvider {
+struct AdventureMapView_Previews: PreviewProvider {
     static var previews: some View {
-        CheatingMapView()
+        AdventureMapView()
             .environmentObject(LocationManager())
     }
 }

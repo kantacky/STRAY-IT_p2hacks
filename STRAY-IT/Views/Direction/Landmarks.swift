@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Landmarks: View {
-    @EnvironmentObject var manager: LocationManager
+    @EnvironmentObject var locationManager: LocationManager
     
     var body: some View {
         GeometryReader { geometry in
@@ -19,13 +19,13 @@ struct Landmarks: View {
                     .frame(width: geometry.size.width * 0.8, height: geometry.size.width * 0.8)
                     .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
                 
-                ForEach(manager.landmarks) { item in
+                ForEach(locationManager.localSearchManagerByLocation.landmarks) { item in
                     if (item.getPointOfInterestCategoryImageName() != nil) {
                         Image(item.getPointOfInterestCategoryImageName()!)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 50, height: 50)
-                            .position(x: geometry.size.width / 2 + manager.calculatePosition(geometry.size.width * 0.8 / 2, item.direction)[0], y: geometry.size.height / 2 + manager.calculatePosition(geometry.size.width * 0.8 / 2, item.direction)[1])
+                            .position(x: geometry.size.width / 2 + LocationCalculator().getPosition(geometry.size.width * 0.8 / 2, item.direction)[0], y: geometry.size.height / 2 + LocationCalculator().getPosition(geometry.size.width * 0.8 / 2, item.direction)[1])
                     }
                 }
             }

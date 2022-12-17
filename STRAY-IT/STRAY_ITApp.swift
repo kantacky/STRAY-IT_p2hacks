@@ -13,7 +13,6 @@ struct STRAY_ITApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(LocationManager())
-                .environmentObject(ViewStates())
         }
     }
 }

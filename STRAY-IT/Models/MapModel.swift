@@ -9,68 +9,13 @@ import Foundation
 import MapKit
 import SwiftUI
 
-struct UIMapView: UIViewRepresentable {
-    @EnvironmentObject var manager: LocationManager
-    let mapManager = MapManager()
-    
-    func makeUIView(context: Self.Context) -> UIViewType {
-        let mapView = mapManager.mapViewObj
-        
-        let basePin1 = manager.places["start"]!
-        let basePin2 = manager.places["goal"]!
-        
-        mapView.addAnnotation(basePin1)
-        mapView.addAnnotation(basePin2)
-        
-        let basePlaceMark1 = MKPlacemark(coordinate: basePin1.coordinate)
-        let basePlaceMark2 = MKPlacemark(coordinate: basePin2.coordinate)
-        
-        let directionRequest = MKDirections.Request()
-        directionRequest.source = MKMapItem(placemark: basePlaceMark1)
-        directionRequest.destination = MKMapItem(placemark: basePlaceMark2)
-        directionRequest.transportType = MKDirectionsTransportType.walking
-        
-        let directions = MKDirections(request: directionRequest)
-        directions.calculate { (response, error) in
-            guard let directionResonse = response else {
-                if let error = error {
-                    print(error.localizedDescription)
-                }
-                return
-            }
-            
-            let route = directionResonse.routes[0]
-            
-            mapView.addOverlay(route.polyline, level: .aboveRoads)
-            
-            let rect = route.polyline.boundingMapRect
-            var rectRegion = MKCoordinateRegion(rect)
-            rectRegion.span.latitudeDelta = rectRegion.span.latitudeDelta * 1.2
-            rectRegion.span.longitudeDelta = rectRegion.span.longitudeDelta * 1.2
-            mapView.setRegion(rectRegion, animated: true)
-        }
-        
-        return mapView
-    }
-    
-    func updateUIView(_ uiView: MKMapView, context: Self.Context) {
-        uiView.delegate = mapManager
-    }
-}
-
-struct UIMapView_Previews: PreviewProvider {
-    static var previews: some View {
-        UIMapView()
-            .environmentObject(LocationManager())
-    }
-}
-
-class MapManager: NSObject, MKMapViewDelegate{
-    var mapViewObj = MKMapView()
+class MapViewManager: NSObject, MKMapViewDelegate{
+    var mapViewObject = MKMapView()
+    var headingDirection: CGFloat!
     
     override init() {
         super.init()
-        mapViewObj.delegate = self
+        mapViewObject.delegate = self
     }
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -92,12 +37,44 @@ class MapManager: NSObject, MKMapViewDelegate{
                 reuseIdentifier: identifier
             )
             
+            //            annotationView.markerTintColor = UIColor(named: "RouteColor")
+            //            annotationView.glyphImage = UIImage(named: "Marker")
+            if (annotationView.annotation?.subtitle == "Current Location") {
+                //                annotationView.image = UIImage(named: "DirectionSmall")!
+                //                    .rotatedBy(degree: headingDirection)
+                annotationView.markerTintColor = UIColor(named: "AccentColor")
+                annotationView.glyphImage = UIImage(systemName: "location.fill")
+                
+                return annotationView
+            }
+            //            annotationView.image = UIImage(named: "Marker")
             annotationView.markerTintColor = UIColor(named: "RouteColor")
             annotationView.glyphImage = UIImage(named: "Marker")
-            annotationView.canShowCallout = true
-//            annotationView.image = UIImage(named: "Marker")
             
             return annotationView
         }
     }
 }
+
+//extension UIImage {
+//
+//    func rotatedBy(degree: CGFloat, isCropped: Bool = true) -> UIImage {
+//        let radian = -degree * CGFloat.pi / 180
+//        var rotatedRect = CGRect(origin: .zero, size: self.size)
+//        if !isCropped {
+//            rotatedRect = rotatedRect.applying(CGAffineTransform(rotationAngle: radian))
+//        }
+//        UIGraphicsBeginImageContext(rotatedRect.size)
+//        let context = UIGraphicsGetCurrentContext()!
+//        context.translateBy(x: rotatedRect.size.width / 2, y: rotatedRect.size.height / 2)
+//        context.scaleBy(x: 1.0, y: -1.0)
+//
+//        context.rotate(by: radian)
+//        context.draw(self.cgImage!, in: CGRect(x: -(self.size.width / 2), y: -(self.size.height / 2), width: self.size.width, height: self.size.height))
+//
+//        let rotatedImage = UIGraphicsGetImageFromCurrentImageContext()!
+//        UIGraphicsEndImageContext()
+//
+//        return rotatedImage
+//    }
+//}

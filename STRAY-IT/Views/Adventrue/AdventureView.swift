@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct AdventureView: View {
-    @EnvironmentObject var manager: LocationManager
+    @EnvironmentObject var locationManager: LocationManager
     
     var body: some View {
-        UIMapView()
+        AdventureMapView()
+            .background(Color("Background"))
             .edgesIgnoringSafeArea([.top, .horizontal])
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    locationManager.whichView = .adventure
+                }
+            }
     }
 }
 

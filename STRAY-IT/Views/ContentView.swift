@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var viewStates: ViewStates
+    @EnvironmentObject var locationManager: LocationManager
     @State var selectedTab = 0
     
     var body: some View {
-        if (viewStates.searchViewIsShowing) {
+        if (locationManager.whichView == .search) {
             SearchView()
         } else {
             TabView(selection: $selectedTab) {
@@ -33,8 +33,6 @@ struct ContentView: View {
                 CheatingView()
                     .tabItem {
                         Image(selectedTab == 2 ? "CheatingViewTabSelectedIcon" : "CheatingViewTabUnselectedIcon")
-
-                            .font(.system(size: 8))
                         Text("Cheat")
                     }
                     .tag(2)
@@ -46,7 +44,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environmentObject(ViewStates())
             .environmentObject(LocationManager())
     }
 }

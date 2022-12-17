@@ -9,7 +9,7 @@ import SwiftUI
 import MapKit
 
 struct DirectionView: View {
-    @EnvironmentObject var manager: LocationManager
+    @EnvironmentObject var locationManager: LocationManager
     
     var body: some View {
         ZStack {
@@ -19,11 +19,11 @@ struct DirectionView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .rotationEffect(.degrees(manager.destinationDirection))
+                .rotationEffect(.degrees(locationManager.destinationDirection))
             
             Landmarks()
             
-            Text("\(Int(manager.delta)) m")
+            Text("\(Int(locationManager.distance)) m")
                 .foregroundColor(Color("AccentFontColor"))
                 .font(.title2)
                 .fontWeight(.semibold)
@@ -35,7 +35,9 @@ struct DirectionView: View {
         .edgesIgnoringSafeArea([.top, .horizontal])
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                manager.isDiscovering = true
+                locationManager.whichView = .direction
+                locationManager.isDiscovering = true
+                
             }
         }
     }
