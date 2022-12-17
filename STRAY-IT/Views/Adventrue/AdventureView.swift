@@ -11,7 +11,7 @@ struct AdventureView: View {
     @EnvironmentObject var manager: LocationManager
     
     var body: some View {
-        UIMapView()
+        AdventureMapView()
             .edgesIgnoringSafeArea([.top, .horizontal])
     }
 }
