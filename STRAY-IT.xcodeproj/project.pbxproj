@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8242C699294D7D1600D650F3 /* CheatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8242C698294D7D1600D650F3 /* CheatingView.swift */; };
+		8242C69C294D7FE800D650F3 /* CheatingMapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8242C69B294D7FE800D650F3 /* CheatingMapModel.swift */; };
 		F141FF6329486B3D003CA1CF /* SearchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F141FF6229486B3D003CA1CF /* SearchButton.swift */; };
 		F141FF662948A1FC003CA1CF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F141FF652948A1FC003CA1CF /* Launch Screen.storyboard */; };
 		F179EBC0294579C600C597F6 /* STRAY_ITApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBBF294579C600C597F6 /* STRAY_ITApp.swift */; };
@@ -45,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8242C698294D7D1600D650F3 /* CheatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatingView.swift; sourceTree = "<group>"; };
+		8242C69B294D7FE800D650F3 /* CheatingMapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatingMapModel.swift; sourceTree = "<group>"; };
 		F141FF6229486B3D003CA1CF /* SearchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchButton.swift; sourceTree = "<group>"; };
 		F141FF642948A0E1003CA1CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F141FF652948A1FC003CA1CF /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
@@ -95,6 +99,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8242C697294D7C6400D650F3 /* Cheating */ = {
+			isa = PBXGroup;
+			children = (
+				8242C698294D7D1600D650F3 /* CheatingView.swift */,
+			);
+			path = Cheating;
+			sourceTree = "<group>";
+		};
 		F179EBB3294579C600C597F6 = {
 			isa = PBXGroup;
 			children = (
@@ -163,6 +175,7 @@
 				F179EBEB2945864300C597F6 /* Direction */,
 				F1E95D662947FAC80020C98E /* Search */,
 				F1C2EDE9294D4946009678D7 /* Adventrue */,
+				8242C697294D7C6400D650F3 /* Cheating */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -183,6 +196,7 @@
 				F1C2EDEA294D4B3F009678D7 /* SearchModel.swift */,
 				F1C2EDEC294D4B84009678D7 /* StateModel.swift */,
 				F1C2EDEE294D4C64009678D7 /* MapModel.swift */,
+				8242C69B294D7FE800D650F3 /* CheatingMapModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -340,8 +354,10 @@
 				F179EBEF29458DBC00C597F6 /* LocationModel.swift in Sources */,
 				F179EBED2945867100C597F6 /* DirectionView.swift in Sources */,
 				F1C2EDEB294D4B3F009678D7 /* SearchModel.swift in Sources */,
+				8242C69C294D7FE800D650F3 /* CheatingMapModel.swift in Sources */,
 				F179EBC2294579C600C597F6 /* ContentView.swift in Sources */,
 				F179EBC0294579C600C597F6 /* STRAY_ITApp.swift in Sources */,
+				8242C699294D7D1600D650F3 /* CheatingView.swift in Sources */,
 				F1C2EDEF294D4C64009678D7 /* MapModel.swift in Sources */,
 				F1C2EDE6294ADD6A009678D7 /* Landmarks.swift in Sources */,
 				F141FF6329486B3D003CA1CF /* SearchButton.swift in Sources */,
