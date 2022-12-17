@@ -13,19 +13,6 @@ struct Landmarks: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-//                Path { path in
-//                    path.addArc(
-//                        center: CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2),
-//                        radius: geometry.size.width * 0.8 / 2,
-//                        startAngle: .degrees(-90),
-//                        endAngle: .degrees(270),
-//                        clockwise: false
-//                    )
-//                }
-//                .stroke(lineWidth: 0.5)
-//                .fill(Color("AccentColor"))
-//                .frame(width: geometry.size.width * 0.8, height: geometry.size.width * 0.8)
-                
                 Image("Circle")
                     .resizable()
                     .scaledToFit()

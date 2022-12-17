@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "CheatViewTabSelectedIconLight.svg",
+      "filename" : "CheatingViewTabSelectedIconLight.svg",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "CheatViewTabSelectedIconDark.svg",
+      "filename" : "CheatingViewTabSelectedIconDark.svg",
       "idiom" : "universal"
     }
   ],

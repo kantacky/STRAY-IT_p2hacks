@@ -23,14 +23,14 @@ struct ContentView: View {
                     }
                     .tag(0)
                 
-//                AdventureView()
-//                    .tabItem {
-//                        Image(selectedTab == 1 ? "AdventureViewTabSelectedIcon" : "AdventureViewTabUnselectedIcon")
-//                        Text("Adventure")
-//                    }
-//                    .tag(1)
-//
-//                CheattingView()
+                AdventureView()
+                    .tabItem {
+                        Image(selectedTab == 1 ? "AdventureViewTabSelectedIcon" : "AdventureViewTabUnselectedIcon")
+                        Text("Adventure")
+                    }
+                    .tag(1)
+
+//                CheatingView()
 //                    .tabItem {
 //                        Image(selectedTab == 2 ? "CheatViewTabSelectedIcon" : "CheatViewTabUnselectedIcon")
 //
