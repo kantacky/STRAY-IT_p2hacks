@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @EnvironmentObject var viewStates: ViewStates
-    @EnvironmentObject var manager: LocationManager
-    @State var searcher = LocationSearcher()
+    @EnvironmentObject var locationManager: LocationManager
     @State private var queryText: String = ""
     @FocusState private var searchBarIsFocused: Bool
     
@@ -33,23 +31,23 @@ struct SearchView: View {
             .padding()
             
             ScrollView {
-                if ($searcher.wrappedValue.isSearching()) {
+                if (locationManager.localSearchManagerByQuery.isSearching()) {
                     ProgressView()
                 } else {
-                    ForEach(searcher.results, id: \.self) { result in
+                    ForEach(locationManager.localSearchManagerByQuery.results, id: \.self) { result in
                         Button (action: {
                             searchBarIsFocused = false
                             
-                            let coordinate = searcher.getLocationCoordinate(result)
-                            let title = searcher.getLocationName(result)
-                            manager.setDestination(IdentifiablePlace(latitude: coordinate.latitude, longitude: coordinate.longitude, title: title, subtitle: nil))
+                            let coordinate = result.placemark.coordinate
+                            let title = result.name
+                            locationManager.setDestination(IdentifiablePlace(latitude: coordinate.latitude, longitude: coordinate.longitude, title: title, subtitle: nil))
                             
-                            viewStates.searchViewIsShowing = false
+                            locationManager.whichView = .direction
                         }) {
                             HStack {
                                 VStack {
                                     HStack {
-                                        Text(searcher.getLocationName(result) ?? "")
+                                        Text(result.name ?? "No Name")
                                         Spacer()
                                     }
                                     .padding(.vertical, 2.0)
@@ -74,13 +72,13 @@ struct SearchView: View {
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                manager.isDiscovering = false
+                locationManager.isDiscovering = false
                 searchBarIsFocused = true
             }
         }
         .onChange(of: queryText, perform: { newValue in
-            searcher.setRegion(manager.region)
-            searcher.updateQueryText(newValue)
+            locationManager.localSearchManagerByQuery.setRegion(locationManager.region)
+            locationManager.localSearchManagerByQuery.updateQueryText(newValue)
         })
         .onSubmit {
             searchBarIsFocused = false
@@ -92,7 +90,6 @@ struct SearchView: View {
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
         SearchView()
-            .environmentObject(ViewStates())
             .environmentObject(LocationManager())
     }
 }

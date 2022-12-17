@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct SearchButton: View {
-    @EnvironmentObject var viewStates: ViewStates
+    @EnvironmentObject var locationManager: LocationManager
     
     var body: some View {
         VStack {
             HStack {
                 Button(action: {
-                    viewStates.searchViewIsShowing = true
+                    locationManager.whichView = .search
                 }) {
                     Image("SearchSmall")
                         .padding(16.0)
@@ -35,6 +35,6 @@ struct SearchButton: View {
 struct SearchButton_Previews: PreviewProvider {
     static var previews: some View {
         SearchButton()
-            .environmentObject(ViewStates())
+            .environmentObject(LocationManager())
     }
 }

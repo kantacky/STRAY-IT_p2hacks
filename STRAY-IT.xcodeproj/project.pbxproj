@@ -23,11 +23,12 @@
 		F1C2EDE4294ABCFF009678D7 /* LandmarkIcons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1C2EDE3294ABCFF009678D7 /* LandmarkIcons.xcassets */; };
 		F1C2EDE6294ADD6A009678D7 /* Landmarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C2EDE5294ADD6A009678D7 /* Landmarks.swift */; };
 		F1C2EDE8294D4942009678D7 /* AdventureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C2EDE7294D4942009678D7 /* AdventureView.swift */; };
-		F1C2EDEB294D4B3F009678D7 /* SearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C2EDEA294D4B3F009678D7 /* SearchModel.swift */; };
-		F1C2EDED294D4B84009678D7 /* StateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C2EDEC294D4B84009678D7 /* StateModel.swift */; };
+		F1C2EDEB294D4B3F009678D7 /* LocalSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C2EDEA294D4B3F009678D7 /* LocalSearchModel.swift */; };
 		F1C2EDEF294D4C64009678D7 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C2EDEE294D4C64009678D7 /* MapModel.swift */; };
 		F1E95D682947FAD60020C98E /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E95D672947FAD60020C98E /* SearchView.swift */; };
 		F1E9FF4D294D8160007CA475 /* AdventureMapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E9FF4C294D8160007CA475 /* AdventureMapModel.swift */; };
+		F1E9FF4F294DB392007CA475 /* PointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E9FF4E294DB392007CA475 /* PointModel.swift */; };
+		F1E9FF53294DFA81007CA475 /* LocationCalculateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E9FF52294DFA81007CA475 /* LocationCalculateModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,11 +70,12 @@
 		F1C2EDE3294ABCFF009678D7 /* LandmarkIcons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LandmarkIcons.xcassets; sourceTree = "<group>"; };
 		F1C2EDE5294ADD6A009678D7 /* Landmarks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Landmarks.swift; sourceTree = "<group>"; };
 		F1C2EDE7294D4942009678D7 /* AdventureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureView.swift; sourceTree = "<group>"; };
-		F1C2EDEA294D4B3F009678D7 /* SearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModel.swift; sourceTree = "<group>"; };
-		F1C2EDEC294D4B84009678D7 /* StateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateModel.swift; sourceTree = "<group>"; };
+		F1C2EDEA294D4B3F009678D7 /* LocalSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSearchModel.swift; sourceTree = "<group>"; };
 		F1C2EDEE294D4C64009678D7 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
 		F1E95D672947FAD60020C98E /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		F1E9FF4C294D8160007CA475 /* AdventureMapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureMapModel.swift; sourceTree = "<group>"; };
+		F1E9FF4E294DB392007CA475 /* PointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointModel.swift; sourceTree = "<group>"; };
+		F1E9FF52294DFA81007CA475 /* LocationCalculateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCalculateModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,8 +197,9 @@
 			isa = PBXGroup;
 			children = (
 				F179EBEE29458DBC00C597F6 /* LocationModel.swift */,
-				F1C2EDEA294D4B3F009678D7 /* SearchModel.swift */,
-				F1C2EDEC294D4B84009678D7 /* StateModel.swift */,
+				F1E9FF52294DFA81007CA475 /* LocationCalculateModel.swift */,
+				F1C2EDEA294D4B3F009678D7 /* LocalSearchModel.swift */,
+				F1E9FF4E294DB392007CA475 /* PointModel.swift */,
 				F1C2EDEE294D4C64009678D7 /* MapModel.swift */,
 				F1E9FF4C294D8160007CA475 /* AdventureMapModel.swift */,
 				8242C69B294D7FE800D650F3 /* CheatingMapModel.swift */,
@@ -355,8 +358,9 @@
 			files = (
 				F1E95D682947FAD60020C98E /* SearchView.swift in Sources */,
 				F179EBEF29458DBC00C597F6 /* LocationModel.swift in Sources */,
+				F1E9FF4F294DB392007CA475 /* PointModel.swift in Sources */,
 				F179EBED2945867100C597F6 /* DirectionView.swift in Sources */,
-				F1C2EDEB294D4B3F009678D7 /* SearchModel.swift in Sources */,
+				F1C2EDEB294D4B3F009678D7 /* LocalSearchModel.swift in Sources */,
 				8242C69C294D7FE800D650F3 /* CheatingMapModel.swift in Sources */,
 				F179EBC2294579C600C597F6 /* ContentView.swift in Sources */,
 				F179EBC0294579C600C597F6 /* STRAY_ITApp.swift in Sources */,
@@ -366,7 +370,7 @@
 				F1C2EDE6294ADD6A009678D7 /* Landmarks.swift in Sources */,
 				F141FF6329486B3D003CA1CF /* SearchButton.swift in Sources */,
 				F1C2EDE8294D4942009678D7 /* AdventureView.swift in Sources */,
-				F1C2EDED294D4B84009678D7 /* StateModel.swift in Sources */,
+				F1E9FF53294DFA81007CA475 /* LocationCalculateModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

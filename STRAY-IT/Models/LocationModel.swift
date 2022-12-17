@@ -8,261 +8,196 @@
 import Foundation
 import MapKit
 
-class IdentifiablePlace: NSObject, MKAnnotation, Identifiable {
-    let id: UUID
-    let coordinate: CLLocationCoordinate2D
-    let title: String?
-    let subtitle: String?
-    
-    init(id: UUID = UUID(), latitude: Double, longitude: Double, title: String?, subtitle: String?) {
-        self.id = id
-        self.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        self.title = title
-        self.subtitle = subtitle
-    }
-    
-    init(id: UUID = UUID(), location: CLLocationCoordinate2D, title: String?, subtitle: String?) {
-        self.id = id
-        self.coordinate = location
-        self.title = title
-        self.subtitle = subtitle
-    }
-}
-
-class Landmark: Identifiable {
-    let id: UUID
-    let location: CLLocationCoordinate2D
-    let name: String
-    let pointOfInterestCategory: MKPointOfInterestCategory?
-    var direction: CGFloat
-    
-    init(id: UUID = UUID(), location: CLLocationCoordinate2D, name: String?, pointOfInterestCategory: MKPointOfInterestCategory?) {
-        self.id = id
-        self.location = location
-        self.name = name ?? "No Name"
-        self.pointOfInterestCategory = pointOfInterestCategory
-        self.direction = 0
-    }
-    
-    func setDirection(_ newDirection: CGFloat) {
-        direction = newDirection
-    }
-    
-    func getPointOfInterestCategoryImageName() -> String? {
-        if (pointOfInterestCategory != nil) {
-            switch (pointOfInterestCategory!) {
-            case .atm:
-                return "Atm"
-            case .bakery:
-                return "Bakery"
-            case .bank:
-                return "Bank"
-            case .cafe:
-                return "Cafe"
-            case .carRental:
-                return "CarRental"
-            case .fireStation:
-                return "FireStation"
-            case .fitnessCenter:
-                return "FitnessCenter"
-            case .foodMarket:
-                return "FoodMarket"
-            case .gasStation:
-                return "GasStation"
-            case .hospital:
-                return "Hospital"
-            case .hotel:
-                return "Hotel"
-            case .laundry:
-                return "Laundry"
-            case .library:
-                return "Library"
-            case .movieTheater:
-                return "MovieTheater"
-            case .museum:
-                return "Museum"
-            case .park:
-                return "Park"
-            case .parking:
-                return "Parking"
-            case .pharmacy:
-                return "Pharmacy"
-            case .police:
-                return "Police"
-            case .postOffice:
-                return "PostOffice"
-            case .publicTransport:
-                return "PublicTransport"
-            case .restaurant:
-                return "Restaurant"
-            case .restroom:
-                return "Restroom"
-            case .school:
-                return "School"
-            case .store:
-                return "Store"
-            case .university:
-                return "University"
-            default:
-                return nil
-            }
-        } else {
-            return nil
-        }
-    }
+enum Views {
+    case search
+    case direction
+    case adventure
+    case cheating
 }
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
-    let manager = CLLocationManager()
-    let landmarkSearcher = LandmarkSearcher()
+    let locationManager = CLLocationManager()
+    let localSearchManagerByQuery = LocalSearchManager.SearchByQuery()
+    let localSearchManagerByLocation = LocalSearchManager.SearchByLocation()
+    var adventureMapViewManager = MapViewManager()
+    var cheatingMapViewManager = MapViewManager()
     
-    @Published var isDiscovering = false
-    @Published var region = MKCoordinateRegion()
-    private var landmarksRegion = MKCoordinateRegion()
-    @Published var places: [String: IdentifiablePlace]
-    @Published var landmarks: [Landmark] = []
-    @Published var headingDirection: Double = 0
-    @Published var destinationDirection: Double = 0
-    @Published var delta: Double = 0
-    private var landmarksRadius: CLLocationDistance = 50.0
+    @Published var whichView: Views
+    @Published var adventureCurrentLocationMark: IdentifiablePlace!
+    @Published var cheatingCurrentLocationMark: IdentifiablePlace!
+    @Published var adventureDirectionRequest: MKDirections.Request
+    @Published var cheatingDirectionRequest: MKDirections.Request
+    @Published var isDiscovering: Bool
+    @Published var region: MKCoordinateRegion
+    @Published var start_and_goal: [IdentifiablePlace]
+    @Published var headingDirection: CGFloat
+    @Published var destinationDirection: CGFloat
+    @Published var distance: CGFloat
     
     override init() {
-        places = ["start": IdentifiablePlace(latitude: 0, longitude: 0, title: nil, subtitle: nil), "goal": IdentifiablePlace(latitude: 0, longitude: 0, title: nil, subtitle: nil)]
+        whichView = .search
+        isDiscovering = false
+        adventureDirectionRequest = MKDirections.Request()
+        cheatingDirectionRequest = MKDirections.Request()
+        region = MKCoordinateRegion()
+        start_and_goal = [IdentifiablePlace(latitude: 0, longitude: 0, title: nil, subtitle: nil), IdentifiablePlace(latitude: 0, longitude: 0, title: nil, subtitle: nil)]
+        headingDirection = 0
+        destinationDirection = 0
+        distance = 0
         
         super.init()
-        manager.delegate = self
-        manager.requestWhenInUseAuthorization()
-        manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.distanceFilter = 1.0
-        manager.startUpdatingLocation()
-        manager.startUpdatingHeading()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = 1.0
+        locationManager.startUpdatingLocation()
+        locationManager.startUpdatingHeading()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         locations.last.map {
-            let center = CLLocationCoordinate2D(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude)
-            
             region = MKCoordinateRegion(
-                center: center,
+                center: CLLocationCoordinate2D(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude),
                 latitudinalMeters: 1000.0,
                 longitudinalMeters: 1000.0
-            )
-            
-            landmarksRegion = MKCoordinateRegion(
-                center: center,
-                latitudinalMeters: landmarksRadius,
-                longitudinalMeters: landmarksRadius
             )
         }
         
         if (isDiscovering) {
-            landmarkSearcher.searchNearHear(center: region.center, radius: region.span.latitudeDelta)
-            makeLandmarkList()
-            calculateLandmarksDirection()
-            calculateDeltaFromHereToGoal()
-            calculateDestinationDirection()
+            localSearchManagerByLocation.searchNearHear(center: region.center, radius: region.span.latitudeDelta)
+            localSearchManagerByLocation.setDirection(currentCoordinate: region.center, headingDirection: headingDirection)
+            getDistanceFromHereToGoal()
+            getDestinationDirection()
         }
+        
+        updateCurrentLocationOnAdventureMapView()
+        updateCurrentLocationOnCheatingMapView()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading heading: CLHeading) {
         headingDirection = heading.magneticHeading
         
         if (isDiscovering) {
-            calculateDeltaFromHereToGoal()
-            calculateDestinationDirection()
-            calculateLandmarksDirection()
+            getDistanceFromHereToGoal()
+            getDestinationDirection()
+            localSearchManagerByLocation.setDirection(currentCoordinate: region.center, headingDirection: headingDirection)
         }
     }
 }
 
 extension LocationManager {
     
-    func calculateDelta(_ originalCoordinate: CLLocation, _ targetCoordinate: CLLocation) -> CGFloat {
-        return originalCoordinate.distance(from: targetCoordinate)
+    public func setDestination(_ destination: IdentifiablePlace) {
+        adventureMapViewManager = MapViewManager()
+        cheatingMapViewManager = MapViewManager()
+        adventureCurrentLocationMark = nil
+        cheatingCurrentLocationMark = nil
+        start_and_goal = [IdentifiablePlace(coordinate: region.center, title: nil, subtitle: nil), destination]
+        
+        getDistanceFromHereToGoal()
+        getDestinationDirection()
     }
     
-    func calculateDeltaFromHereToGoal() {
-        if (places["goal"] != nil) {
+    private func getDistanceFromHereToGoal() {
+        if (start_and_goal[0] != start_and_goal[1]) {
             let currentCoordinate = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
-            let goalCoordinate = CLLocation(latitude: places["goal"]!.coordinate.latitude, longitude: places["goal"]!.coordinate.longitude)
-            delta = calculateDelta(currentCoordinate, goalCoordinate)
+            let goalCoordinate = CLLocation(latitude: start_and_goal[1].coordinate.latitude, longitude: start_and_goal[1].coordinate.longitude)
+            distance = LocationCalculator().getDistance(currentCoordinate, goalCoordinate)
         }
     }
     
-    func toRadian(_ angle: CGFloat) -> CGFloat {
-        return angle * CGFloat.pi / 180
+    private func getDestinationDirection() {
+        if (start_and_goal[0] != start_and_goal[1]) {
+            destinationDirection = LocationCalculator().getDirectionDelta(region.center, start_and_goal[1].coordinate, headingDirection: headingDirection)
+        }
+    }
+}
+
+extension LocationManager {
+    
+    func initAdventureMapView() {
+        adventureMapViewManager.mapViewObject.addAnnotation(start_and_goal[0])
+        adventureMapViewManager.mapViewObject.addAnnotation(start_and_goal[1])
+        
+        adventureDirectionRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[0].coordinate))
+        adventureDirectionRequest.destination = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[1].coordinate))
+        adventureDirectionRequest.transportType = MKDirectionsTransportType.walking
+        
+        let directions = MKDirections(request: adventureDirectionRequest)
+        directions.calculate { (response, error) in
+            guard let directionResponse = response else {
+                if let error = error {
+                    print(error.localizedDescription)
+                }
+                return
+            }
+            
+            let route = directionResponse.routes[0]
+            
+            if (self.whichView == .cheating) {
+                self.adventureMapViewManager.mapViewObject.addOverlay(route.polyline, level: .aboveRoads)
+            }
+            
+            let rect = route.polyline.boundingMapRect
+            var rectRegion = MKCoordinateRegion(rect)
+            rectRegion.span.latitudeDelta = rectRegion.span.latitudeDelta * 1.4
+            rectRegion.span.longitudeDelta = rectRegion.span.longitudeDelta * 1.4
+            self.adventureMapViewManager.mapViewObject.setRegion(rectRegion, animated: true)
+        }
     }
     
-    func setDestination(_ destination: IdentifiablePlace) {
-        places["start"] = IdentifiablePlace(location: region.center, title: nil, subtitle: nil)
-        places["goal"] = destination
+    func initCheatingMapView() {
+        cheatingMapViewManager.mapViewObject.addAnnotation(start_and_goal[0])
+        cheatingMapViewManager.mapViewObject.addAnnotation(start_and_goal[1])
         
-        calculateDeltaFromHereToGoal()
-        calculateDestinationDirection()
+        cheatingDirectionRequest.source = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[0].coordinate))
+        cheatingDirectionRequest.destination = MKMapItem(placemark: MKPlacemark(coordinate: start_and_goal[1].coordinate))
+        cheatingDirectionRequest.transportType = MKDirectionsTransportType.walking
+        
+        let directions = MKDirections(request: cheatingDirectionRequest)
+        directions.calculate { (response, error) in
+            guard let directionResponse = response else {
+                if let error = error {
+                    print(error.localizedDescription)
+                }
+                return
+            }
+            
+            let route = directionResponse.routes[0]
+            
+            self.cheatingMapViewManager.mapViewObject.addOverlay(route.polyline, level: .aboveRoads)
+            
+            let rect = route.polyline.boundingMapRect
+            var rectRegion = MKCoordinateRegion(rect)
+            rectRegion.span.latitudeDelta = rectRegion.span.latitudeDelta * 1.4
+            rectRegion.span.longitudeDelta = rectRegion.span.longitudeDelta * 1.4
+            self.cheatingMapViewManager.mapViewObject.setRegion(rectRegion, animated: true)
+        }
     }
     
-    private func calculateDirection(_ originalCoordinate: CLLocationCoordinate2D, _ targetCoordinate: CLLocationCoordinate2D) -> CGFloat {
-        var direction: CGFloat
-        
-        let originalLatitude = toRadian(originalCoordinate.latitude)
-        let originalLongitude = toRadian(originalCoordinate.longitude)
-        let targetLatitude = toRadian(targetCoordinate.latitude)
-        let targetLongitude = toRadian(targetCoordinate.longitude)
-        
-        let longitudeDelta = targetLongitude - originalLongitude
-        let y = sin(longitudeDelta)
-        let x = cos(originalLatitude) * tan(targetLatitude) - sin(originalLatitude) * cos(longitudeDelta)
-        let p = atan2(y, x) * 180 / CGFloat.pi
-        
-        if p < 0 {
-            direction = 360 + atan2(y, x) * 180 / CGFloat.pi
+    func updateCurrentLocationOnAdventureMapView() {
+        if (adventureCurrentLocationMark == nil && region.center.latitude != start_and_goal[0].coordinate.latitude && region.center.longitude != start_and_goal[0].coordinate.longitude) {
+            adventureCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+            adventureMapViewManager.headingDirection = headingDirection
+            adventureMapViewManager.mapViewObject.addAnnotation(adventureCurrentLocationMark)
         } else {
-            direction = atan2(y, x) * 180 / CGFloat.pi
-        }
-        
-        direction -= headingDirection
-        
-        return direction
-    }
-    
-    private func calculateDestinationDirection() {
-        if (places["goal"] != nil) {
-            destinationDirection = calculateDirection(region.center, places["goal"]!.coordinate)
+            var lineLocation: [CLLocationCoordinate2D] = [adventureCurrentLocationMark.coordinate, region.center]
+            let line = MKPolyline(coordinates: &lineLocation, count: 2)
+            adventureMapViewManager.mapViewObject.addOverlay(line, level: .aboveRoads)
+            adventureCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+            adventureMapViewManager.headingDirection = headingDirection
         }
     }
     
-    private func makeLandmarkList() {
-        for item in landmarkSearcher.results {
-            let name = landmarkSearcher.getLocationName(item)
-            let location = landmarkSearcher.getLocationCoordinate(item)
-            let category = landmarkSearcher.getLocationPointOfInterestCategory(item)
-            var isMultiple = false
-            for landmark in landmarks {
-                if (landmark.location.latitude == location.latitude && landmark.location.longitude == location.longitude) {
-                    isMultiple = true
-                }
-                if (calculateDelta(CLLocation(latitude: landmark.location.latitude, longitude: landmark.location.longitude), CLLocation(latitude: location.latitude, longitude: location.longitude)) > landmarksRadius) {
-                    landmarks.remove(at: landmarks.firstIndex(where: {$0.id == landmark.id})!)
-                }
-            }
-            if (!isMultiple) {
-                landmarks.append(Landmark(location: location, name: name, pointOfInterestCategory: category))
-            }
+    func updateCurrentLocationOnCheatingMapView() {
+        if (cheatingCurrentLocationMark == nil && region.center.latitude != start_and_goal[0].coordinate.latitude && region.center.longitude != start_and_goal[0].coordinate.longitude) {
+            cheatingCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+            cheatingMapViewManager.headingDirection = headingDirection
+            cheatingMapViewManager.mapViewObject.addAnnotation(cheatingCurrentLocationMark)
+        } else {
+            cheatingCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+            adventureMapViewManager.headingDirection = headingDirection
         }
-    }
-    
-    private func calculateLandmarksDirection() {
-        landmarks.forEach { item in
-            item.setDirection(calculateDirection(region.center, item.location))
-        }
-    }
-    
-    func calculatePosition(_ radius: CGFloat, _ degrees: CGFloat) -> [CGFloat] {
-        let theta = toRadian(degrees)
-        let x = radius * cos(theta)
-        let y = radius * sin(theta)
-        
-        return [x, y]
     }
 }

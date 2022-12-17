@@ -6,7 +6,26 @@
 //
 
 import Foundation
+import MapKit
+import SwiftUI
 
-extension MapManager {
+struct CheatingMapView: UIViewRepresentable {
+    @EnvironmentObject var locationManager: LocationManager
     
+    func makeUIView(context: Self.Context) -> UIViewType {
+        locationManager.initCheatingMapView()
+        
+        return locationManager.cheatingMapViewManager.mapViewObject
+    }
+    
+    func updateUIView(_ uiView: MKMapView, context: Self.Context) {
+        uiView.delegate = locationManager.cheatingMapViewManager
+    }
+}
+
+struct CheatingMapView_Previews: PreviewProvider {
+    static var previews: some View {
+        CheatingMapView()
+            .environmentObject(LocationManager())
+    }
 }

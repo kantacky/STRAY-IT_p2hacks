@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct CheatingView: View {
-    @EnvironmentObject var manager: LocationManager
+    @EnvironmentObject var locationManager: LocationManager
     
     var body: some View {
-        UIMapView()
+        CheatingMapView()
+            .background(Color("Background"))
             .edgesIgnoringSafeArea([.top, .horizontal])
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    locationManager.whichView = .cheating
+                }
+            }
     }
 }
 
