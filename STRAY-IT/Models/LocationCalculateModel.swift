@@ -49,4 +49,11 @@ class LocationCalculator {
     private func toRadian(_ angle: CGFloat) -> CGFloat {
         return angle * CGFloat.pi / 180
     }
+    
+    public func isSameLocation(_ coordinate1: CLLocationCoordinate2D, _ coordinate2: CLLocationCoordinate2D) -> Bool {
+        if (coordinate1.latitude == coordinate2.longitude && coordinate1.longitude == coordinate2.latitude) {
+            return true
+        }
+        return false
+    }
 }

@@ -189,7 +189,7 @@ extension LocationManager {
     }
     
     func updateCurrentLocationOnAdventureMapView() {
-        if (adventureMapViewManager != nil) {
+        if (adventureMapViewManager != nil && !LocationCalculator().isSameLocation(region.center, start_and_goal[0].coordinate)) {
             if (adventureCurrentLocationMark == nil) {
                 adventureCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
                 adventureMapViewManager.headingDirection = headingDirection
@@ -198,20 +198,24 @@ extension LocationManager {
                 var lineLocation: [CLLocationCoordinate2D] = [adventureCurrentLocationMark.coordinate, region.center]
                 let line = MKPolyline(coordinates: &lineLocation, count: 2)
                 adventureMapViewManager.mapViewObject.addOverlay(line, level: .aboveRoads)
+                adventureMapViewManager.mapViewObject.removeAnnotation(adventureCurrentLocationMark)
                 adventureCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+                adventureMapViewManager.mapViewObject.addAnnotation(adventureCurrentLocationMark)
                 adventureMapViewManager.headingDirection = headingDirection
             }
         }
     }
     
     func updateCurrentLocationOnCheatingMapView() {
-        if (cheatingMapViewManager != nil) {
+        if (cheatingMapViewManager != nil && !LocationCalculator().isSameLocation(region.center, start_and_goal[0].coordinate)) {
             if (cheatingCurrentLocationMark == nil) {
                 cheatingCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
                 cheatingMapViewManager.headingDirection = headingDirection
                 cheatingMapViewManager.mapViewObject.addAnnotation(cheatingCurrentLocationMark)
             } else {
+                cheatingMapViewManager.mapViewObject.removeAnnotation(cheatingCurrentLocationMark)
                 cheatingCurrentLocationMark = IdentifiablePlace(coordinate: region.center, title: nil, subtitle: "Current Location")
+                cheatingMapViewManager.mapViewObject.addAnnotation(cheatingCurrentLocationMark)
                 cheatingMapViewManager.headingDirection = headingDirection
             }
         }
