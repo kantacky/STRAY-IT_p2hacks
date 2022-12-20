@@ -33,7 +33,7 @@ struct ContentView: View {
                 CheatingView()
                     .tabItem {
                         Image(selectedTab == 2 ? "CheatingViewTabSelectedIcon" : "CheatingViewTabUnselectedIcon")
-                        Text("Cheat")
+                        Text("Cheating")
                     }
                     .tag(2)
             }
