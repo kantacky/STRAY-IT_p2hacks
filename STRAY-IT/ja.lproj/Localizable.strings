@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  STRAY-IT
+
+  Created by Kanta Oikawa on 2022/12/20.
+  
+*/
+
+"Direction" = "方向";
+"Adventure" = "冒険";
+"Cheating" = "チート";
+"You need to allow the use of location information to display your current location on the map." = "このアプリの機能を利用するには、位置情報の利用を許可する必要があります。";

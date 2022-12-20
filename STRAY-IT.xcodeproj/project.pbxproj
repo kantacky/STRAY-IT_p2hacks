@@ -20,6 +20,7 @@
 		F179EBDE294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBDD294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift */; };
 		F179EBED2945867100C597F6 /* DirectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBEC2945867100C597F6 /* DirectionView.swift */; };
 		F179EBEF29458DBC00C597F6 /* LocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F179EBEE29458DBC00C597F6 /* LocationModel.swift */; };
+		F193D19A2951A58900ED1E1F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F193D19C2951A58900ED1E1F /* Localizable.strings */; };
 		F1C2EDE4294ABCFF009678D7 /* LandmarkIcons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1C2EDE3294ABCFF009678D7 /* LandmarkIcons.xcassets */; };
 		F1C2EDE6294ADD6A009678D7 /* Landmarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C2EDE5294ADD6A009678D7 /* Landmarks.swift */; };
 		F1C2EDE8294D4942009678D7 /* AdventureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C2EDE7294D4942009678D7 /* AdventureView.swift */; };
@@ -67,6 +68,7 @@
 		F179EBDD294579C800C597F6 /* STRAY_ITUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STRAY_ITUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F179EBEC2945867100C597F6 /* DirectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionView.swift; sourceTree = "<group>"; };
 		F179EBEE29458DBC00C597F6 /* LocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModel.swift; sourceTree = "<group>"; };
+		F193D19B2951A58900ED1E1F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F1C2EDE3294ABCFF009678D7 /* LandmarkIcons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LandmarkIcons.xcassets; sourceTree = "<group>"; };
 		F1C2EDE5294ADD6A009678D7 /* Landmarks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Landmarks.swift; sourceTree = "<group>"; };
 		F1C2EDE7294D4942009678D7 /* AdventureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureView.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 				F179EBC5294579C800C597F6 /* STRAY_IT.entitlements */,
 				F141FF642948A0E1003CA1CF /* Info.plist */,
 				F179EBC6294579C800C597F6 /* Preview Content */,
+				F193D19C2951A58900ED1E1F /* Localizable.strings */,
 			);
 			path = "STRAY-IT";
 			sourceTree = "<group>";
@@ -310,6 +313,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ja,
 			);
 			mainGroup = F179EBB3294579C600C597F6;
 			productRefGroup = F179EBBD294579C600C597F6 /* Products */;
@@ -328,6 +332,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F193D19A2951A58900ED1E1F /* Localizable.strings in Resources */,
 				F1C2EDE4294ABCFF009678D7 /* LandmarkIcons.xcassets in Resources */,
 				F141FF662948A1FC003CA1CF /* Launch Screen.storyboard in Resources */,
 				F179EBC8294579C800C597F6 /* Preview Assets.xcassets in Resources */,
@@ -405,6 +410,17 @@
 			targetProxy = F179EBD8294579C800C597F6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F193D19C2951A58900ED1E1F /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F193D19B2951A58900ED1E1F /* ja */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		F179EBDF294579C800C597F6 /* Debug */ = {
@@ -538,7 +554,7 @@
 				INFOPLIST_FILE = "STRAY-IT/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "STRAY-IT";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "You need to allow us to use this app to show your location on the map. ";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To use the functions of this app, you need to allow the use of location information.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -588,7 +604,7 @@
 				INFOPLIST_FILE = "STRAY-IT/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "STRAY-IT";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "You need to allow us to use this app to show your location on the map. ";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To use the functions of this app, you need to allow the use of location information.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
